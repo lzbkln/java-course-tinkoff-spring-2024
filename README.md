@@ -1,7 +1,7 @@
 ![Bot](https://github.com/podlizzie/java-course-tinkoff-spring-2024/actions/workflows/bot.yml/badge.svg)
 ![Scrapper](https://github.com/podlizzie/java-course-tinkoff-spring-2024/actions/workflows/scrapper.yml/badge.svg)
 
-# Link Tracker
+## Link Tracker
 
 ФИО: Бакулина Елизавета Константиновна
 
