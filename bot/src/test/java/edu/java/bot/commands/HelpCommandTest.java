@@ -1,18 +1,34 @@
 package edu.java.bot.commands;
 
+import com.pengrad.telegrambot.model.BotCommand;
+import com.pengrad.telegrambot.model.Chat;
+import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
+import edu.java.bot.BotApplication;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@SpringBootTest(classes = {BotApplication.class})
 public class HelpCommandTest {
-    HelpCommand helpCommand;
+    @Mock
+    private Update update;
+    @Mock
+    private Message message;
+    @Mock
+    private Chat chat;
+    private HelpCommand helpCommand;
 
     @BeforeEach
     public void setUp() {
         helpCommand = new HelpCommand();
+        Mockito.when(update.message()).thenReturn(message);
+        Mockito.when(message.chat()).thenReturn(chat);
+        Mockito.when(chat.id()).thenReturn(1L);
     }
 
     @Test
@@ -28,11 +44,7 @@ public class HelpCommandTest {
             /list - Show list of tracked links
             /help - Get list of all commands""";
 
-        Update mockUpdate = Mockito.mock(Update.class);
-
-        String actualResponse = helpCommand.execute(mockUpdate);
-
-        assertEquals(expectedResponse, actualResponse);
+        assertEquals(expectedResponse, helpCommand.execute(update));
     }
 
     @Test
@@ -43,5 +55,13 @@ public class HelpCommandTest {
 
         assertEquals(helpCommand.nameCommand(), expectedNameOfCommand);
         assertEquals(helpCommand.descriptionOfCommand(), expectedDescriptionOfCommand);
+    }
+
+    @Test
+    @DisplayName("Test getBotCommand returns correct BotCommand instance")
+    public void testGetBotCommand() {
+        BotCommand expectedBotCommand = new BotCommand("/help", "Get list of all commands");
+        assertEquals(expectedBotCommand.command(), helpCommand.getBotCommand().command());
+        assertEquals(expectedBotCommand.description(), helpCommand.getBotCommand().description());
     }
 }
