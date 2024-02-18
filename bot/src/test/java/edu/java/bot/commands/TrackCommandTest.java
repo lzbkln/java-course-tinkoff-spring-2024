@@ -44,7 +44,7 @@ public class TrackCommandTest {
     }
 
     @Test
-    @DisplayName("Test that /list command without registration returned valid message")
+    @DisplayName("Test that /track command without registration returned valid message")
     public void testThatListCommandWithoutRegistrationReturnedValidMessage() {
         Mockito.doReturn("/track https://github.com").when(message).text();
         Mockito.doReturn(null).when(userRepository).findById(12L);
@@ -93,7 +93,7 @@ public class TrackCommandTest {
     }
 
     @Test
-    @DisplayName("Test that /help command returned valid name and description")
+    @DisplayName("Test that /track command returned valid name and description")
     public void testThatHelpCommandReturnedValidNameAndDescription() {
         String expectedNameOfCommand = "/track";
         String expectedDescriptionOfCommand = "Start link tracking";
