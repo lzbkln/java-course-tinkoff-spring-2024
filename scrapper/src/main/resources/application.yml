@@ -6,7 +6,7 @@ app:
   stack-overflow-url:
     default-url: https://api.stackexchange.com/2.3
   git-hub-url:
-    default-url: https://api.github.com/repos/
+    default-url: https://api.github.com
 
 spring:
   application:
