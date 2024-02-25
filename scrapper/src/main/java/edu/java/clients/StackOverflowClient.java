@@ -11,9 +11,9 @@ public class StackOverflowClient {
         client = WebClient.create(url);
     }
 
-    public Mono<StackOverflowResponseDTO> getQuestionsInfo(String ids) {
+    public Mono<StackOverflowResponseDTO> getQuestionsInfo(String id) {
         return client.get()
-            .uri("/questions/" + ids + "?site=stackoverflow")
+            .uri("/questions/" + id + "?site=stackoverflow")
             .retrieve()
             .bodyToMono(StackOverflowResponseDTO.class);
     }
