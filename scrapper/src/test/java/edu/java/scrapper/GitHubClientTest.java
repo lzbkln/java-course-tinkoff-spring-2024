@@ -41,10 +41,10 @@ public class GitHubClientTest {
     @Test
     @DisplayName("Test for GitHub existing repos")
     void testThatExistingReposReturnedRightAnswer() {
-        String repositoryPath = "podlizzie/java-course-tinkoff-spring-2024";
-        OffsetDateTime updatedAt = OffsetDateTime.of(2024, 2, 7, 18, 12, 6, 0, ZoneOffset.of("Z"));
-        OffsetDateTime createdAt = OffsetDateTime.of(2024, 2, 7, 18, 5, 20, 0, ZoneOffset.of("Z"));
-        OffsetDateTime pushedAt = OffsetDateTime.of(2024, 2, 25, 19, 47, 32, 0, ZoneOffset.of("Z"));
+        String repositoryPath = "podlizzie/java-course-2023-tink";
+        OffsetDateTime updatedAt = OffsetDateTime.of(2023, 10, 3, 19, 25, 25, 0, ZoneOffset.of("Z"));
+        OffsetDateTime createdAt = OffsetDateTime.of(2023, 10, 3, 19, 16, 51, 0, ZoneOffset.of("Z"));
+        OffsetDateTime pushedAt = OffsetDateTime.of(2023, 12, 26, 11, 25, 34, 0, ZoneOffset.of("Z"));
 
         wireMockServer.stubFor(WireMock.get("/repos/" + repositoryPath)
             .willReturn(WireMock.ok()
