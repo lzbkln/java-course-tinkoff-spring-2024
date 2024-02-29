@@ -1,14 +1,16 @@
 package edu.java.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-public record StackOverflowResponseDTO(@JsonProperty("items") List<Question> items) {
+public record StackOverflowResponseDTO(List<Question> items) {
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public record Question(
-        @JsonProperty("title") String title,
-        @JsonProperty("answer_count") int answerCount,
-        @JsonProperty("last_activity_date") OffsetDateTime lastActivityDate
+        String title,
+        int answerCount,
+        OffsetDateTime lastActivityDate
     ) {
     }
 }
