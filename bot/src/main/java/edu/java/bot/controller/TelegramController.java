@@ -6,9 +6,9 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.service.CommandService;
 import java.util.List;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 
-@Controller
+@Component
 public class TelegramController implements UpdatesListener {
     public final CommandService commandService;
     public final TelegramBot telegramBot;
