@@ -13,11 +13,6 @@ public abstract class LinkHandler {
     }
 
     public boolean isValid(String link) {
-        if (link.matches(pattern)) {
-            return true;
-        } else if (nextHandler != null) {
-            return nextHandler.isValid(link);
-        }
-        return false;
+        return link.matches(pattern) || (nextHandler != null && nextHandler.isValid(link));
     }
 }
