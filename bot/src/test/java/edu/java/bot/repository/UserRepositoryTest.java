@@ -7,9 +7,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = {BotApplication.class})
 public class UserRepositoryTest {
@@ -30,15 +30,15 @@ public class UserRepositoryTest {
         when(mockUser.getId()).thenReturn(1L);
         userRepository.saveUser(mockUser);
 
-        assertEquals(1, userRepository.dbUsers.size());
-        assertEquals(mockUser, userRepository.dbUsers.get(1L));
+        assertEquals(1, userRepository.getDbUsers().size());
+        assertEquals(mockUser, userRepository.getDbUsers().get(1L));
     }
 
     @Test
     @DisplayName("Test finding a user by ID")
     public void testFindUserById() {
         when(mockUser.getId()).thenReturn(1L);
-        userRepository.dbUsers.put(1L, mockUser);
+        userRepository.getDbUsers().put(1L, mockUser);
 
         assertEquals(mockUser, userRepository.findById(1L));
         assertNull(userRepository.findById(2L));
@@ -48,10 +48,10 @@ public class UserRepositoryTest {
     @DisplayName("Test updating a user by ID")
     public void testUpdateUserById() {
         when(updatedUser.getId()).thenReturn(1L);
-        userRepository.dbUsers.put(1L, mockUser);
+        userRepository.getDbUsers().put(1L, mockUser);
         userRepository.updateUserById(1L, updatedUser);
 
-        assertEquals(updatedUser, userRepository.dbUsers.get(1L));
+        assertEquals(updatedUser, userRepository.getDbUsers().get(1L));
     }
 }
 
