@@ -21,11 +21,10 @@ public class HelpCommandTest {
     private Message message;
     @Mock
     private Chat chat;
-    private HelpCommand helpCommand;
+    private final HelpCommand helpCommand = new HelpCommand();
 
     @BeforeEach
     public void setUp() {
-        helpCommand = new HelpCommand();
         Mockito.when(update.message()).thenReturn(message);
         Mockito.when(message.chat()).thenReturn(chat);
         Mockito.when(chat.id()).thenReturn(1L);
