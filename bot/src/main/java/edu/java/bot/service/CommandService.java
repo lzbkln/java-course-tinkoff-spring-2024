@@ -5,15 +5,14 @@ import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.commands.Command;
 import java.util.HashMap;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Map;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CommandService {
-    public HashMap<String, Command> allCommands;
+    private Map<String, Command> allCommands;
     private static final String NO_SUCH_COMMAND = "This command doesn't exist, try /help";
 
-    @Autowired
     public CommandService(List<Command> commandList) {
         fillAllCommands(commandList);
     }
