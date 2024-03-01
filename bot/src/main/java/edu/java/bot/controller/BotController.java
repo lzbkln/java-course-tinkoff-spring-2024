@@ -1,6 +1,6 @@
 package edu.java.bot.controller;
 
-import edu.java.bot.dto.request.LinkUpdate;
+import edu.java.bot.dto.request.LinkUpdateRequest;
 import jakarta.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,8 +16,8 @@ public class BotController {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @PostMapping("/update")
-    public ResponseEntity<?> update(@Valid @RequestBody LinkUpdate linkUpdate) {
-        LOGGER.info("New linkUpdate");
+    public ResponseEntity<?> update(@Valid @RequestBody LinkUpdateRequest linkUpdateRequest) {
+        LOGGER.info("New linkUpdateRequest");
         return ResponseEntity.ok().build();
     }
 }
