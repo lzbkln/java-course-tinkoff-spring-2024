@@ -1,4 +1,4 @@
-package edu.java.dto;
+package edu.java.dto.responses;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

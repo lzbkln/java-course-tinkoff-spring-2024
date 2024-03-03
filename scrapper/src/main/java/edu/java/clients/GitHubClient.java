@@ -1,6 +1,6 @@
 package edu.java.clients;
 
-import edu.java.dto.GitHubResponseDTO;
+import edu.java.dto.responses.GitHubResponseDTO;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 

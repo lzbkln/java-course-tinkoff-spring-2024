@@ -1,6 +1,6 @@
 package edu.java.clients;
 
-import edu.java.dto.StackOverflowResponseDTO;
+import edu.java.dto.responses.StackOverflowResponseDTO;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
