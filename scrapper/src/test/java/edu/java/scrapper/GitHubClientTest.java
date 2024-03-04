@@ -42,7 +42,7 @@ public class GitHubClientTest {
     @Test
     @DisplayName("Test for GitHub existing repos")
     void testThatExistingReposReturnedRightAnswer() {
-        String repositoryPath = "podlizzie/java-course-2023-tink";
+        String repositoryPath = "lzbkln/java-course-2023-tink";
         OffsetDateTime updatedAt = OffsetDateTime.of(2023, 10, 3, 19, 25, 25, 0, ZoneOffset.of("Z"));
         OffsetDateTime createdAt = OffsetDateTime.of(2023, 10, 3, 19, 16, 51, 0, ZoneOffset.of("Z"));
         OffsetDateTime pushedAt = OffsetDateTime.of(2023, 12, 26, 11, 25, 34, 0, ZoneOffset.of("Z"));
