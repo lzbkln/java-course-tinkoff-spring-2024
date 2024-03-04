@@ -14,7 +14,7 @@ public interface ChatControllerAnnotations {
         @ApiResponse(responseCode = "400", description = "Некорректные параметры запроса",
                      content = @Content(mediaType = "application/json",
                                         schema = @Schema(implementation = ApiErrorResponse.class))),
-        @ApiResponse(responseCode = "", description = "Чат уже зарегистрирован",
+        @ApiResponse(responseCode = "409", description = "Чат уже зарегистрирован",
                      content = @Content(mediaType = "application/json",
                                         schema = @Schema(implementation = ApiErrorResponse.class)))
     })

@@ -40,6 +40,9 @@ public interface LinkControllerAnnotations {
                                         schema = @Schema(implementation = ApiErrorResponse.class))),
         @ApiResponse(responseCode = "404", description = "Чат не существует",
                      content = @Content(mediaType = "application/json",
+                                        schema = @Schema(implementation = ApiErrorResponse.class))),
+        @ApiResponse(responseCode = "409", description = "Ссылка уже отслеживается",
+                     content = @Content(mediaType = "application/json",
                                         schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     void addLink(Long id, AddLinkRequest addLinkRequest);
@@ -53,7 +56,10 @@ public interface LinkControllerAnnotations {
         @ApiResponse(responseCode = "400", description = "Некорректные параметры запроса",
                      content = @Content(mediaType = "application/json",
                                         schema = @Schema(implementation = ApiErrorResponse.class))),
-        @ApiResponse(responseCode = "404", description = "Ссылка не найдена",
+        @ApiResponse(responseCode = "404", description = "Чат не существует",
+                     content = @Content(mediaType = "application/json",
+                                        schema = @Schema(implementation = ApiErrorResponse.class))),
+        @ApiResponse(responseCode = "409", description = "Ссылка не отслеживалась",
                      content = @Content(mediaType = "application/json",
                                         schema = @Schema(implementation = ApiErrorResponse.class)))
     })
