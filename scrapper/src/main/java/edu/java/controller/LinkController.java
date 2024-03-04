@@ -2,10 +2,8 @@ package edu.java.controller;
 
 import edu.java.dto.requests.AddLinkRequest;
 import edu.java.dto.requests.RemoveLinkRequest;
-import edu.java.dto.responses.LinkResponse;
 import edu.java.dto.responses.ListLinksResponse;
 import edu.java.service.LinkService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

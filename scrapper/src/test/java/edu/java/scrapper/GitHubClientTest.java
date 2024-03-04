@@ -15,6 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -48,7 +49,7 @@ public class GitHubClientTest {
 
         wireMockServer.stubFor(WireMock.get("/repos/" + repositoryPath)
             .willReturn(WireMock.ok()
-                .withHeader("Content-type", "application/json")
+                .withHeader("Content-type", MediaType.APPLICATION_JSON_VALUE)
                 .withBody("""
                     {
                         "full_name": "%s",

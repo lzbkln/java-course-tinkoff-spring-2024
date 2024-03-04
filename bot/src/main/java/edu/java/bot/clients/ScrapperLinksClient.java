@@ -3,7 +3,6 @@ package edu.java.bot.clients;
 import edu.java.bot.dto.requests.AddLinkRequest;
 import edu.java.bot.dto.requests.RemoveLinkRequest;
 import edu.java.bot.dto.responses.ApiErrorResponse;
-import edu.java.bot.dto.responses.LinkResponse;
 import edu.java.bot.dto.responses.ListLinksResponse;
 import edu.java.bot.exception.ApiErrorResponseException;
 import org.springframework.http.HttpMethod;
