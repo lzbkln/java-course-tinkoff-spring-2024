@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 
 public class ScrapperLinksClient {
     private static final String TG_CHAT_ID = "Tg-Chat-Id";
-    private static final String LINKS = "scrapper/links";
+    private static final String LINKS = "/scrapper/links";
     private final WebClient webClient;
 
     public ScrapperLinksClient(String baseUrl) {
@@ -35,13 +35,12 @@ public class ScrapperLinksClient {
 
     public Mono<ResponseEntity<LinkResponse>> addLink(Long id, AddLinkRequest request) {
         return webClient.post()
-            .uri(LINKS).header(TG_CHAT_ID, String.valueOf(id))
+            .uri(LINKS).header(TG_CHAT_ID, id.toString())
             .bodyValue(request)
             .retrieve()
             .onStatus(
                 statusCode -> HttpStatus.NOT_FOUND.equals(statusCode)
-                    || HttpStatus.BAD_REQUEST.equals(statusCode)
-                    || HttpStatus.CONFLICT.equals(statusCode),
+                    || HttpStatus.BAD_REQUEST.equals(statusCode),
                 response -> response.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
             )
             .toEntity(LinkResponse.class);

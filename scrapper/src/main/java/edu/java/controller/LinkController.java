@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/scrapper/links")
 @RequiredArgsConstructor
-public class LinkController {
+public class LinkController implements LinkControllerAnnotations {
     private final LinkService linkService;
 
     @PostMapping

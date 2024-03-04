@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 public class ScrapperChatClient {
     private final WebClient webClient;
-    private static final String TG_CHAT = "scrapper/tg-chat";
+    private static final String TG_CHAT = "/scrapper/tg-chat/{id}";
     private static final String TG_CHAT_ID = "Tg-Chat-Id";
 
     public ScrapperChatClient(String baseUrl) {
@@ -19,7 +19,7 @@ public class ScrapperChatClient {
     public Mono<ResponseEntity<Void>> registerChat(Long id) {
         return webClient
             .post()
-            .uri(TG_CHAT).header(TG_CHAT_ID, id.toString())
+            .uri(builder -> builder.path(TG_CHAT).build(id))
             .retrieve()
             .onStatus(
                 statusCode -> HttpStatus.BAD_REQUEST.equals(statusCode)
@@ -32,7 +32,7 @@ public class ScrapperChatClient {
     public Mono<ResponseEntity<Void>> deleteChat(Long id) {
         return webClient
             .delete()
-            .uri(TG_CHAT).header(TG_CHAT_ID, id.toString())
+            .uri(builder -> builder.path(TG_CHAT).build(id))
             .retrieve()
             .onStatus(
                 statusCode -> HttpStatus.BAD_REQUEST.equals(statusCode)
