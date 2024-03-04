@@ -7,6 +7,8 @@ app:
     default-url: https://api.stackexchange.com/2.3
   git-hub-url:
     default-url: https://api.github.com
+  bot-link:
+    link: http://localhost:8080
 
 spring:
   application:
