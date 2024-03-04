@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 
 public class ScrapperLinksClient {
     private static final String TG_CHAT_ID = "Tg-Chat-Id";
-    private static final String LINKS = "/scrapper/links";
+    private static final String LINKS = "scrapper/links";
     private final WebClient webClient;
 
     public ScrapperLinksClient(String baseUrl) {
@@ -33,7 +33,7 @@ public class ScrapperLinksClient {
             .toEntity(ListLinksResponse.class);
     }
 
-    public Mono<ResponseEntity<LinkResponse>> addLink(Long id, AddLinkRequest request) {
+    public Mono<ResponseEntity<Void>> addLink(Long id, AddLinkRequest request) {
         return webClient.post()
             .uri(LINKS).header(TG_CHAT_ID, id.toString())
             .bodyValue(request)
@@ -43,10 +43,10 @@ public class ScrapperLinksClient {
                     || HttpStatus.BAD_REQUEST.equals(statusCode),
                 response -> response.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
             )
-            .toEntity(LinkResponse.class);
+            .toBodilessEntity();
     }
 
-    public Mono<ResponseEntity<LinkResponse>> deleteLink(Long id, RemoveLinkRequest request) {
+    public Mono<ResponseEntity<Void>> deleteLink(Long id, RemoveLinkRequest request) {
         return webClient.method(HttpMethod.DELETE)
             .uri(LINKS).header(TG_CHAT_ID, id.toString())
             .bodyValue(request)
@@ -57,6 +57,6 @@ public class ScrapperLinksClient {
                     || HttpStatus.CONFLICT.equals(statusCode),
                 response -> response.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
             )
-            .toEntity(LinkResponse.class);
+            .toBodilessEntity();
     }
 }

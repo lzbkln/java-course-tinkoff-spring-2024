@@ -10,7 +10,6 @@ import reactor.core.publisher.Mono;
 public class ScrapperChatClient {
     private final WebClient webClient;
     private static final String TG_CHAT = "/scrapper/tg-chat/{id}";
-    private static final String TG_CHAT_ID = "Tg-Chat-Id";
 
     public ScrapperChatClient(String baseUrl) {
         webClient = WebClient.create(baseUrl);
@@ -26,7 +25,7 @@ public class ScrapperChatClient {
                     || HttpStatus.NOT_FOUND.equals(statusCode),
                 response -> response.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
             )
-            .toEntity(Void.class);
+            .toBodilessEntity();
     }
 
     public Mono<ResponseEntity<Void>> deleteChat(Long id) {
@@ -39,6 +38,6 @@ public class ScrapperChatClient {
                     || HttpStatus.NOT_FOUND.equals(statusCode),
                 response -> response.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
             )
-            .toEntity(Void.class);
+            .toBodilessEntity();
     }
 }

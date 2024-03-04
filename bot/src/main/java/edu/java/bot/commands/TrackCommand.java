@@ -57,8 +57,7 @@ public class TrackCommand implements Command {
 
         return scrapperLinksClient.addLink(id, new AddLinkRequest(new URI(link)))
             .map(response -> {
-                if (HttpStatus.OK.equals(response.getStatusCode())
-                    && response.getBody() != null) {
+                if (HttpStatus.OK.equals(response.getStatusCode())) {
                     return DESCRIPTION_OF_COMMAND;
                 }
                 return EXCEPTION_MESSAGE;

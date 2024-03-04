@@ -3,6 +3,7 @@ package edu.java.service;
 import edu.java.dto.requests.AddLinkRequest;
 import edu.java.dto.requests.RemoveLinkRequest;
 import edu.java.dto.responses.LinkResponse;
+import edu.java.dto.responses.ListLinksResponse;
 import edu.java.entity.Link;
 import edu.java.entity.TelegramChat;
 import edu.java.repository.LinkRepository;
@@ -22,7 +23,7 @@ public class LinkService {
     private final LinkRepository linkRepository;
     private final TelegramChatRepository telegramChatRepository;
 
-    public List<LinkResponse> getAllLinks(Long chatId) {
+    public ListLinksResponse getAllLinks(Long chatId) {
         checkRegisterChat(chatId);
 
         List<Link> links = telegramChatRepository.findById(chatId).getLinks();
@@ -33,7 +34,7 @@ public class LinkService {
             linkResponses.add(linkResponse);
         }
 
-        return linkResponses;
+        return new ListLinksResponse(linkResponses, linkResponses.size());
     }
 
     public void saveLink(Long chatId, AddLinkRequest addLinkRequest) {

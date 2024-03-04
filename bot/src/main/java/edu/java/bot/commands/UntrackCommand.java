@@ -45,6 +45,7 @@ public class UntrackCommand implements Command {
     }
 
     private String untrackCommand(Long id, String[] parts) throws URISyntaxException {
+
         if (parts.length != 2) {
             return INVALID_FORMAT_MESSAGE;
         }
@@ -57,8 +58,7 @@ public class UntrackCommand implements Command {
 
         return scrapperLinksClient.deleteLink(id, new RemoveLinkRequest(new URI(link)))
             .map(response -> {
-                if (HttpStatus.OK.equals(response.getStatusCode())
-                    && response.getBody() != null) {
+                if (HttpStatus.OK.equals(response.getStatusCode())) {
                     return DESCRIPTION_OF_COMMAND;
                 }
                 return EXCEPTION_MESSAGE;

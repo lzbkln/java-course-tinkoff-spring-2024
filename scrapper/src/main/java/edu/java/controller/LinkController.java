@@ -3,6 +3,7 @@ package edu.java.controller;
 import edu.java.dto.requests.AddLinkRequest;
 import edu.java.dto.requests.RemoveLinkRequest;
 import edu.java.dto.responses.LinkResponse;
+import edu.java.dto.responses.ListLinksResponse;
 import edu.java.service.LinkService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class LinkController implements LinkControllerAnnotations {
     }
 
     @GetMapping
-    public List<LinkResponse> getAllLinks(@RequestHeader("Tg-Chat-Id") Long chatId) {
+    public ListLinksResponse getAllLinks(@RequestHeader("Tg-Chat-Id") Long chatId) {
         return linkService.getAllLinks(chatId);
     }
 

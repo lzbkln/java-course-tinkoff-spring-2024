@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import java.util.List;
 
 public interface LinkControllerAnnotations {
 
@@ -27,7 +26,7 @@ public interface LinkControllerAnnotations {
                      content = @Content(mediaType = "application/json",
                                         schema = @Schema(implementation = ApiErrorResponse.class)))
     })
-    List<LinkResponse> getAllLinks(Long chatId);
+    ListLinksResponse getAllLinks(Long chatId);
 
     @Operation(summary = "Добавить отслеживание ссылки")
     @ApiResponses(value = {
