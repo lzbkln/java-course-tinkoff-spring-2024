@@ -39,7 +39,8 @@ public class ScrapperLinksClient {
             .retrieve()
             .onStatus(
                 statusCode -> HttpStatus.NOT_FOUND.equals(statusCode)
-                    || HttpStatus.BAD_REQUEST.equals(statusCode),
+                    || HttpStatus.BAD_REQUEST.equals(statusCode)
+                    || HttpStatus.CONFLICT.equals(statusCode),
                 response -> response.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
             )
             .toBodilessEntity();
