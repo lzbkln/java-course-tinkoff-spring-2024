@@ -28,7 +28,9 @@ public class ScrapperChatClient {
             .onStatus(
                 statusCode -> HttpStatus.NOT_FOUND.equals(statusCode)
                     || HttpStatus.CONFLICT.equals(statusCode),
-                response -> response.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
+                response -> response.bodyToMono(ApiErrorResponse.class)
+                    .map(ApiErrorResponseException::new)
+                    .flatMap(Mono::error)
             )
             .toBodilessEntity();
     }
@@ -39,9 +41,11 @@ public class ScrapperChatClient {
             .uri(TG_CHAT, id)
             .retrieve()
             .onStatus(
-                statusCode -> HttpStatus.CONFLICT.equals(statusCode)
-                    || HttpStatus.NOT_FOUND.equals(statusCode),
-                response -> response.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
+                statusCode -> HttpStatus.NOT_FOUND.equals(statusCode)
+                    || HttpStatus.CONFLICT.equals(statusCode),
+                response -> response.bodyToMono(ApiErrorResponse.class)
+                    .map(ApiErrorResponseException::new)
+                    .flatMap(Mono::error)
             )
             .toBodilessEntity();
     }

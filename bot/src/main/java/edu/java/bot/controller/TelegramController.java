@@ -5,8 +5,8 @@ import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.service.CommandService;
-import java.net.URISyntaxException;
 import java.util.List;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,18 +22,17 @@ public class TelegramController implements UpdatesListener {
 
     @Override
     public int process(List<Update> list) {
-        list.forEach(update -> {
-            if (update.message() != null) {
-                Long chatId = update.message().chat().id();
-                SendMessage sendMessage;
-                try {
-                    sendMessage = new SendMessage(chatId, commandService.doCommand(update));
-                } catch (URISyntaxException e) {
-                    throw new RuntimeException(e);
-                }
-                telegramBot.execute(sendMessage);
-            }
-        });
+        list.stream()
+            .filter(update -> update.message() != null)
+            .forEach(this::process);
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
+    }
+
+    @SneakyThrows
+    private void process(Update update) {
+        Long chatId = update.message().chat().id();
+        SendMessage sendMessage;
+        sendMessage = new SendMessage(chatId, commandService.doCommand(update));
+        telegramBot.execute(sendMessage);
     }
 }

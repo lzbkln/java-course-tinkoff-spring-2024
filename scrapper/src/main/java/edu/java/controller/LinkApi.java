@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-public interface LinkControllerAnnotations {
+public interface LinkApi {
 
     @Operation(summary = "Получить все отслеживаемые ссылки")
     @ApiResponses(value = {

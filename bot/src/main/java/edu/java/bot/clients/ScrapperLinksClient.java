@@ -31,7 +31,9 @@ public class ScrapperLinksClient {
             .retrieve()
             .onStatus(
                 HttpStatus.NOT_FOUND::equals,
-                response -> response.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
+                response -> response.bodyToMono(ApiErrorResponse.class)
+                    .map(ApiErrorResponseException::new)
+                    .flatMap(Mono::error)
             )
             .toEntity(ListLinksResponse.class);
     }
@@ -44,7 +46,9 @@ public class ScrapperLinksClient {
             .onStatus(
                 statusCode -> HttpStatus.NOT_FOUND.equals(statusCode)
                     || HttpStatus.CONFLICT.equals(statusCode),
-                response -> response.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
+                response -> response.bodyToMono(ApiErrorResponse.class)
+                    .map(ApiErrorResponseException::new)
+                    .flatMap(Mono::error)
             )
             .toBodilessEntity();
     }
@@ -57,7 +61,9 @@ public class ScrapperLinksClient {
             .onStatus(
                 statusCode -> HttpStatus.NOT_FOUND.equals(statusCode)
                     || HttpStatus.CONFLICT.equals(statusCode),
-                response -> response.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
+                response -> response.bodyToMono(ApiErrorResponse.class)
+                    .map(ApiErrorResponseException::new)
+                    .flatMap(Mono::error)
             )
             .toBodilessEntity();
     }

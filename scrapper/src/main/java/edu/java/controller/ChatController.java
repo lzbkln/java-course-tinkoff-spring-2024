@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/scrapper/tg-chat")
 @RequiredArgsConstructor
-public class ChatController implements ChatControllerAnnotations {
+public class ChatController implements ChatApi {
     private final TelegramChatService telegramChatService;
 
     @PostMapping("/{id}")
