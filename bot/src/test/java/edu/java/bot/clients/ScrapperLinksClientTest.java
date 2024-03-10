@@ -37,7 +37,7 @@ public class ScrapperLinksClientTest {
         wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().dynamicPort());
         wireMockServer.start();
         WireMock.configureFor("localhost", wireMockServer.port());
-        scrapperLinksClient = new ScrapperLinksClient("http://localhost:8080" + wireMockServer.port());
+        scrapperLinksClient = new ScrapperLinksClient("http://localhost:" + wireMockServer.port());
     }
 
     @AfterAll
