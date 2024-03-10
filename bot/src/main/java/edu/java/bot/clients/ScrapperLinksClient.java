@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 
 public class ScrapperLinksClient {
     private static final String TG_CHAT_ID = "Tg-Chat-Id";
-    private static final String LINKS = "scrapper/links";
+    private static final String LINKS = "/scrapper/links";
     private final WebClient webClient;
 
     public ScrapperLinksClient(String baseUrl) {

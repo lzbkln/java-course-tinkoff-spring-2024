@@ -25,6 +25,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(statusCode).body(errorResponse);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiErrorResponse> exception(
+        Exception exception
+    ) {
+        HttpStatusCode statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+        String description = "Internal Server Error";
+        ApiErrorResponse errorResponse =
+            buildDefaultErrorResponse(statusCode, description, exception);
+
+        return ResponseEntity.status(statusCode).body(errorResponse);
+    }
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiErrorResponse> httpMessageNotReadableException(
         HttpMessageNotReadableException exception
