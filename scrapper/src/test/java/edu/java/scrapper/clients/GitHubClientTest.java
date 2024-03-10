@@ -1,11 +1,11 @@
-package edu.java.scrapper;
+package edu.java.scrapper.clients;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import edu.java.ScrapperApplication;
 import edu.java.clients.GitHubClient;
-import edu.java.dto.GitHubResponseDTO;
+import edu.java.dto.responses.GitHubResponseDTO;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Objects;
@@ -15,6 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -41,14 +42,14 @@ public class GitHubClientTest {
     @Test
     @DisplayName("Test for GitHub existing repos")
     void testThatExistingReposReturnedRightAnswer() {
-        String repositoryPath = "podlizzie/java-course-2023-tink";
+        String repositoryPath = "lzbkln/java-course-2023-tink";
         OffsetDateTime updatedAt = OffsetDateTime.of(2023, 10, 3, 19, 25, 25, 0, ZoneOffset.of("Z"));
         OffsetDateTime createdAt = OffsetDateTime.of(2023, 10, 3, 19, 16, 51, 0, ZoneOffset.of("Z"));
         OffsetDateTime pushedAt = OffsetDateTime.of(2023, 12, 26, 11, 25, 34, 0, ZoneOffset.of("Z"));
 
         wireMockServer.stubFor(WireMock.get("/repos/" + repositoryPath)
             .willReturn(WireMock.ok()
-                .withHeader("Content-type", "application/json")
+                .withHeader("Content-type", MediaType.APPLICATION_JSON_VALUE)
                 .withBody("""
                     {
                         "full_name": "%s",

@@ -5,16 +5,21 @@ import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.BotApplication;
-import edu.java.bot.entities.User;
-import edu.java.bot.repository.UserRepository;
+import edu.java.bot.clients.ScrapperLinksClient;
+import edu.java.bot.dto.responses.ApiErrorResponse;
+import edu.java.bot.dto.responses.LinkResponse;
+import edu.java.bot.dto.responses.ListLinksResponse;
+import java.net.URI;
 import java.util.List;
+import edu.java.bot.exception.ApiErrorResponseException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
+import reactor.core.publisher.Mono;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = {BotApplication.class})
@@ -26,38 +31,36 @@ public class ListCommandTest {
     @Mock
     private Chat chat;
     @Mock
-    private UserRepository userRepository;
-    @Mock
-    private User user = new User(1L);
+    private ScrapperLinksClient scrapperLinksClient;
     private ListCommand listCommand;
 
     @BeforeEach
     public void setUp() {
-        listCommand = new ListCommand(userRepository);
+        listCommand = new ListCommand(scrapperLinksClient);
         Mockito.when(update.message()).thenReturn(message);
         Mockito.when(message.chat()).thenReturn(chat);
         Mockito.when(chat.id()).thenReturn(1L);
     }
 
     @Test
-    @DisplayName("Test that /list command without registration returned valid message")
-    public void testThatListCommandWithoutRegistrationReturnedValidMessage() {
-        Mockito.doReturn(null).when(userRepository).findById(12L);
-        assertEquals("Please, register with /start", listCommand.execute(update));
-    }
-
-    @Test
     @DisplayName("Test that /list command returned valid message for blank list of links")
     public void testThatListCommandReturnedValidMessageForBlankListOfLinks() {
-        Mockito.doReturn(new User(1L)).when(userRepository).findById(1L);
+        Mockito.doReturn(Mono.just(ResponseEntity.ok().body(new ListLinksResponse(List.of(), 0))))
+            .when(scrapperLinksClient).getAllLinks(1L);
+
         assertEquals("No links are being tracked.", listCommand.execute(update));
     }
 
     @Test
     @DisplayName("Test that /list command returned valid message for not blank list of links")
     public void testThatListCommandReturnedValidMessageForNotBlankListOfLinks() {
-        Mockito.when(userRepository.findById(ArgumentMatchers.anyLong())).thenReturn(user);
-        Mockito.when(user.getLinks()).thenReturn(List.of("https://github.com"));
+        Mockito.doReturn(Mono.just(ResponseEntity.ok()
+                .body(new ListLinksResponse(
+                    List.of(new LinkResponse(0L, URI.create("https://github.com"))),
+                    1
+                ))))
+            .when(scrapperLinksClient).getAllLinks(1L);
+
         assertEquals("Tracked links:\nhttps://github.com\n", listCommand.execute(update));
     }
 

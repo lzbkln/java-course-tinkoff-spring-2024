@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class ClientConfig {
     private final ApplicationConfig config;
+    private static final String STACKOVERFLOW_BASE_URL = "https://api.stackexchange.com/2.3";
+    private static final String GITHUB_BASE_URL = "https://api.github.com";
 
     @Bean
     public GitHubClient gitHubClient() {
@@ -22,20 +24,18 @@ public class ClientConfig {
     }
 
     private String getGitHubBaseUrl() {
-        String defaultUrl = config.gitHubUrl().defaultUrl();
-        String baseUrl = config.gitHubUrl().baseUrl();
-        if (baseUrl == null || baseUrl.isBlank()) {
-            return defaultUrl;
+        String configUrl = config.gitHubUrl().defaultUrl();
+        if (configUrl == null || configUrl.isBlank()) {
+            return GITHUB_BASE_URL;
         }
-        return baseUrl;
+        return configUrl;
     }
 
     private String getStackOverflowBaseUrl() {
-        String defaultUrl = config.stackOverflowUrl().defaultUrl();
-        String baseUrl = config.stackOverflowUrl().baseUrl();
-        if (baseUrl == null || baseUrl.isBlank()) {
-            return defaultUrl;
+        String configUrl = config.stackOverflowUrl().defaultUrl();
+        if (configUrl == null || configUrl.isBlank()) {
+            return STACKOVERFLOW_BASE_URL;
         }
-        return baseUrl;
+        return configUrl;
     }
 }

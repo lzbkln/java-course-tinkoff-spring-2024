@@ -3,6 +3,7 @@ package edu.java.bot.service;
 import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.commands.Command;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class CommandService {
         commandList.forEach(command -> allCommands.put(command.nameCommand(), command));
     }
 
-    public String doCommand(Update update) {
+    public String doCommand(Update update) throws URISyntaxException {
         String userCommand = update.message().text().split(" ")[0];
         for (String command : allCommands.keySet()) {
             if (command.equals(userCommand) && userCommand.startsWith("/")) {

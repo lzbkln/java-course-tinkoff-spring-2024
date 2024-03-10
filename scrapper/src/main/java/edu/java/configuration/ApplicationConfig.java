@@ -13,14 +13,19 @@ public record ApplicationConfig(
     @NotNull
     StackOverflowUrl stackOverflowUrl,
     @NotNull
-    GitHubUrl gitHubUrl
+    GitHubUrl gitHubUrl,
+    @NotNull
+    BotLink botLink
 ) {
+    public record BotLink(String link) {
+    }
+
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
     }
 
-    public record StackOverflowUrl(String defaultUrl, String baseUrl) {
+    public record StackOverflowUrl(String defaultUrl) {
     }
 
-    public record GitHubUrl(String defaultUrl, String baseUrl) {
+    public record GitHubUrl(String defaultUrl) {
     }
 }

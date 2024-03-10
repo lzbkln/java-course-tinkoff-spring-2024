@@ -5,13 +5,15 @@ import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.BotApplication;
-import edu.java.bot.repository.UserRepository;
+import edu.java.bot.clients.ScrapperChatClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
+import reactor.core.publisher.Mono;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = {BotApplication.class})
@@ -23,12 +25,12 @@ public class StartCommandTest {
     @Mock
     private Chat chat;
     @Mock
-    private UserRepository userRepository;
+    private ScrapperChatClient scrapperChatClient;
     private StartCommand startCommand;
 
     @BeforeEach
     public void setUp() {
-        startCommand = new StartCommand(userRepository);
+        startCommand = new StartCommand(scrapperChatClient);
         Mockito.when(update.message()).thenReturn(message);
         Mockito.when(message.chat()).thenReturn(chat);
         Mockito.when(chat.id()).thenReturn(1L);
@@ -37,6 +39,7 @@ public class StartCommandTest {
     @Test
     @DisplayName("Test that /start command returned valid message")
     public void testThatStartCommandReturnedValidMessage() {
+        Mockito.doReturn(Mono.just(ResponseEntity.ok().build())).when(scrapperChatClient).registerChat(1L);
         String expectedResponse = "Successful registration";
         assertEquals(expectedResponse, startCommand.execute(update));
     }
