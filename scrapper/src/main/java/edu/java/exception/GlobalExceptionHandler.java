@@ -16,12 +16,12 @@ public class GlobalExceptionHandler {
         ApiErrorResponse errorResponse =
             buildDefaultErrorResponse(exception);
 
-        return ResponseEntity.status(exception.getStatusCode()).body(errorResponse);
+        return ResponseEntity.status(exception.getHttpStatusCode()).body(errorResponse);
     }
 
     private ApiErrorResponse buildDefaultErrorResponse(ServiceException exception) {
-        HttpStatusCode statusCode = exception.getStatusCode();
-        String description = exception.getMessage();
+        HttpStatusCode statusCode = exception.getHttpStatusCode();
+        String description = exception.getDescription();
         return buildDefaultErrorResponse(statusCode, description, exception);
     }
 

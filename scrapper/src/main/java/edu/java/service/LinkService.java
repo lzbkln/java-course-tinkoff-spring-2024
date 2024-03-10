@@ -44,7 +44,7 @@ public class LinkService {
         List<Link> chatLinks = new ArrayList<>(telegramChat.getLinks());
 
         if (chatLinks.stream().anyMatch(link -> link.url().equals(addLinkRequest.link()))) {
-            throw new AlreadyTrackedLinkException(addLinkRequest.link(), chatId);
+            throw new AlreadyTrackedLinkException(addLinkRequest.link());
         } else {
             Link newLink = linkRepository.save(new Link(new Random().nextLong(), addLinkRequest.link()));
             chatLinks.add(newLink);
@@ -60,7 +60,7 @@ public class LinkService {
         List<Link> chatLinks = new ArrayList<>(telegramChat.getLinks());
 
         if (chatLinks.stream().noneMatch(link -> link.url().equals(request.link()))) {
-            throw new NoSuchLinkException(request.link(), chatId);
+            throw new NoSuchLinkException(request.link());
         }
 
         chatLinks.removeIf(chatLink -> chatLink.url().equals(request.link()));

@@ -2,7 +2,9 @@ package edu.java.bot.clients;
 
 import edu.java.bot.dto.responses.ApiErrorResponse;
 import edu.java.bot.exception.ApiErrorResponseException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -12,17 +14,19 @@ public class ScrapperChatClient {
     private static final String TG_CHAT = "/scrapper/tg-chat/{id}";
 
     public ScrapperChatClient(String baseUrl) {
-        webClient = WebClient.create(baseUrl);
+        webClient = WebClient.builder()
+            .baseUrl(baseUrl)
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .build();
     }
 
     public Mono<ResponseEntity<Void>> registerChat(Long id) {
         return webClient
             .post()
-            .uri(builder -> builder.path(TG_CHAT).build(id))
+            .uri(TG_CHAT, id)
             .retrieve()
             .onStatus(
-                statusCode -> HttpStatus.BAD_REQUEST.equals(statusCode)
-                    || HttpStatus.NOT_FOUND.equals(statusCode)
+                statusCode -> HttpStatus.NOT_FOUND.equals(statusCode)
                     || HttpStatus.CONFLICT.equals(statusCode),
                 response -> response.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
             )
@@ -32,10 +36,10 @@ public class ScrapperChatClient {
     public Mono<ResponseEntity<Void>> deleteChat(Long id) {
         return webClient
             .delete()
-            .uri(builder -> builder.path(TG_CHAT).build(id))
+            .uri(TG_CHAT, id)
             .retrieve()
             .onStatus(
-                statusCode -> HttpStatus.BAD_REQUEST.equals(statusCode)
+                statusCode -> HttpStatus.CONFLICT.equals(statusCode)
                     || HttpStatus.NOT_FOUND.equals(statusCode),
                 response -> response.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
             )

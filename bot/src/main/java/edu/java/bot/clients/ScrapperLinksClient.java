@@ -5,8 +5,10 @@ import edu.java.bot.dto.requests.RemoveLinkRequest;
 import edu.java.bot.dto.responses.ApiErrorResponse;
 import edu.java.bot.dto.responses.ListLinksResponse;
 import edu.java.bot.exception.ApiErrorResponseException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -17,7 +19,10 @@ public class ScrapperLinksClient {
     private final WebClient webClient;
 
     public ScrapperLinksClient(String baseUrl) {
-        webClient = WebClient.create(baseUrl);
+        webClient = WebClient.builder()
+            .baseUrl(baseUrl)
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .build();
     }
 
     public Mono<ResponseEntity<ListLinksResponse>> getAllLinks(Long id) {
@@ -25,8 +30,7 @@ public class ScrapperLinksClient {
             .uri(LINKS).header(TG_CHAT_ID, id.toString())
             .retrieve()
             .onStatus(
-                statusCode -> HttpStatus.NOT_FOUND.equals(statusCode)
-                    || HttpStatus.BAD_REQUEST.equals(statusCode),
+                HttpStatus.NOT_FOUND::equals,
                 response -> response.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
             )
             .toEntity(ListLinksResponse.class);
@@ -39,7 +43,6 @@ public class ScrapperLinksClient {
             .retrieve()
             .onStatus(
                 statusCode -> HttpStatus.NOT_FOUND.equals(statusCode)
-                    || HttpStatus.BAD_REQUEST.equals(statusCode)
                     || HttpStatus.CONFLICT.equals(statusCode),
                 response -> response.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
             )
@@ -53,7 +56,6 @@ public class ScrapperLinksClient {
             .retrieve()
             .onStatus(
                 statusCode -> HttpStatus.NOT_FOUND.equals(statusCode)
-                    || HttpStatus.BAD_REQUEST.equals(statusCode)
                     || HttpStatus.CONFLICT.equals(statusCode),
                 response -> response.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
             )

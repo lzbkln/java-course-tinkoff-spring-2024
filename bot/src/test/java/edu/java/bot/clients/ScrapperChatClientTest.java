@@ -42,6 +42,7 @@ public class ScrapperChatClientTest {
 
         ResponseEntity<Void> response = scrapperChatClient.registerChat(123L).block();
 
+        assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNull(response.getBody());
     }
@@ -54,6 +55,7 @@ public class ScrapperChatClientTest {
 
         ResponseEntity<Void> response = scrapperChatClient.registerChat(123L).block();
 
+        assertNotNull(response);
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         assertNull(response.getBody());
     }
@@ -68,6 +70,7 @@ public class ScrapperChatClientTest {
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNull(response.getBody());
     }
 
     @Test
@@ -80,6 +83,7 @@ public class ScrapperChatClientTest {
 
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNull(response.getBody());
     }
 
 }
