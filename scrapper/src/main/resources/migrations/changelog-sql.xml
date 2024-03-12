@@ -1,0 +1,11 @@
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+ http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.21.xsd">
+    <changeSet id="init_tables" author="lzbkl">
+        <sqlFile path="sql/01-chats.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="sql/02-links.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="sql/03-linkage_table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+</databaseChangeLog>

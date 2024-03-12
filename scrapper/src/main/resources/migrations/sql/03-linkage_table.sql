@@ -5,8 +5,8 @@
 -- Date: 03/11/2024
 -- ****************************************************
 
-CREATE TABLE linkage_table (
-    id BIGSERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS linkage_table (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     chat_id BIGINT,
     link_id BIGINT,
 

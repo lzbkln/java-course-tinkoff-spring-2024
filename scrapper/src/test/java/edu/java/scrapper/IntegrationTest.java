@@ -34,7 +34,8 @@ public abstract class IntegrationTest {
 
     @SneakyThrows
     private static void runMigrations(JdbcDatabaseContainer<?> c) {
-        Path changelogPath = new File(".").toPath().toAbsolutePath().resolve("../migrations");
+        Path changelogPath = new File(".").toPath().toAbsolutePath().getParent()
+            .resolve("src/main/resources/migrations");
 
         Connection connection = DriverManager.getConnection(c.getJdbcUrl(), c.getUsername(), c.getPassword());
         Database db = DatabaseFactory.getInstance()

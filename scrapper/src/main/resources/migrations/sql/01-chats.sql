@@ -1,11 +1,11 @@
 --liquibase formatted sql
 -- ****************************************************
--- Create Table: links
+-- Create Table: chats
 -- Author: lzbkl
 -- Date: 03/11/2024
 -- ****************************************************
 
-CREATE TABLE links (
-    link_id BIGSERIAL PRIMARY KEY,
-    url TEXT NOT NULL UNIQUE
+CREATE TABLE IF NOT EXISTS chats (
+    chat_id BIGINT NOT NULL PRIMARY KEY,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
 );
