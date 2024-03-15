@@ -1,6 +1,6 @@
 package edu.java.controller;
 
-import edu.java.service.TelegramChatService;
+import edu.java.service.jdbc.JdbcTelegramChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,15 +12,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/scrapper/tg-chat")
 @RequiredArgsConstructor
 public class ChatController implements ChatApi {
-    private final TelegramChatService telegramChatService;
+    private final JdbcTelegramChatService telegramChatService;
 
     @PostMapping("/{id}")
     public void registerChat(@PathVariable Long id) {
-        telegramChatService.addNewChat(id);
+        telegramChatService.register(id);
     }
 
     @DeleteMapping("/{id}")
     public void deleteChat(@PathVariable Long id) {
-        telegramChatService.deleteChat(id);
+        telegramChatService.unregister(id);
     }
 }

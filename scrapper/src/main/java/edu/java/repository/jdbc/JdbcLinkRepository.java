@@ -3,7 +3,6 @@ package edu.java.repository.jdbc;
 import edu.java.repository.LinkRepository;
 import edu.java.repository.entity.Link;
 import edu.java.repository.jdbc.rowMappers.LinkRowMapper;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -15,40 +14,46 @@ import org.springframework.transaction.annotation.Transactional;
 public class JdbcLinkRepository implements LinkRepository {
     private final JdbcClient jdbcClient;
     private static final RowMapper<Link> ROW_MAPPER = new LinkRowMapper();
+    private static final String INSERT_SQL = "INSERT INTO links (url, last_updated_at) VALUES (:url, :last_updated_at)";
+    private static final String FIND_BY_ID_SQL = "SELECT * FROM links WHERE link_id = :id";
+    private static final String FIND_BY_URL_SQL = "SELECT * FROM links WHERE url = :url";
+    private static final String REMOVE_BY_ID_SQL = "DELETE FROM links WHERE link_id = :id";
+    private static final String ID = "id";
+    private static final String URL = "url";
+    private static final String LAST_UPDATED_AT = "last_updated_at";
 
     @Override
     @Transactional
     public void save(Link link) {
-        jdbcClient.sql("INSERT INTO links (url, last_updated_at) VALUES (:url, :last_updated_at)")
-            .param("url", link.getUrl())
-            .param("last_updated_at", link.getLastUpdatedAt())
+        jdbcClient.sql(INSERT_SQL)
+            .param(URL, link.getUrl())
+            .param(LAST_UPDATED_AT, link.getLastUpdatedAt())
             .update();
     }
 
     @Override
     @Transactional
-    public Optional<Link> findById(Long id) {
-        return jdbcClient.sql("SELECT * FROM links WHERE link_id = :id")
-            .param("id", id)
+    public Link findById(Long id) {
+        return jdbcClient.sql(FIND_BY_ID_SQL)
+            .param(ID, id)
             .query(ROW_MAPPER)
-            .optional();
+            .single();
     }
 
     @Override
     @Transactional
-    public Optional<Link> findByUrl(String url) {
-        return jdbcClient.sql("SELECT * FROM links WHERE url = :url")
-            .param("url", url)
+    public Link findByUrl(String url) {
+        return jdbcClient.sql(FIND_BY_URL_SQL)
+            .param(URL, url)
             .query(ROW_MAPPER)
-            .optional();
+            .single();
     }
 
     @Override
     @Transactional
-    public boolean removeById(Long id) {
-        int rowsAffected = jdbcClient.sql("DELETE FROM links WHERE link_id = :id")
-            .param("id", id)
+    public void removeById(Long id) {
+        jdbcClient.sql(REMOVE_BY_ID_SQL)
+            .param(ID, id)
             .update();
-        return rowsAffected > 0;
     }
 }

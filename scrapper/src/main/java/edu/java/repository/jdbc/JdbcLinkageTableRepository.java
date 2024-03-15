@@ -15,40 +15,60 @@ import org.springframework.transaction.annotation.Transactional;
 public class JdbcLinkageTableRepository implements LinkageTableRepository {
     private final JdbcClient jdbcClient;
     private static final RowMapper<LinkageTable> ROW_MAPPER = new LinkageTableRowMapper();
+    private static final String INSERT_SQL =
+        "INSERT INTO linkage_table (chat_id, link_id) VALUES (:chat_id, :link_id)";
+    private static final String FIND_BY_CHAT_ID_SQL =
+        "SELECT * FROM linkage_table WHERE chat_id = :chat_id";
+    private static final String FIND_BY_LINK_ID_SQL =
+        "SELECT * FROM linkage_table WHERE link_id = :link_id";
+    private static final String DELETE_SQL =
+        "DELETE FROM linkage_table WHERE chat_id = :chat_id AND link_id = :link_id";
+    private static final String COUNT_BY_LINK_ID_SQL =
+        "SELECT COUNT(*) FROM linkage_table WHERE link_id = :link_id";
+    private static final String LINK_ID = "link_id";
+    private static final String CHAT_ID = "chat_id";
 
     @Override
     @Transactional
     public void save(LinkageTable chatLink) {
-        jdbcClient.sql("INSERT INTO linkage_table (chat_id, link_id) VALUES (:chat_id, :link_id)")
-            .param("chat_id", chatLink.getChatId())
-            .param("link_id", chatLink.getLinkId())
+        jdbcClient.sql(INSERT_SQL)
+            .param(CHAT_ID, chatLink.getChatId())
+            .param(LINK_ID, chatLink.getLinkId())
             .update();
     }
 
     @Override
     @Transactional
-    public List<LinkageTable> findByChatId(long chatId) {
-        return jdbcClient.sql("SELECT * FROM linkage_table WHERE chat_id = :chat_id")
-            .param("chat_id", chatId)
+    public List<LinkageTable> findByChatId(Long chatId) {
+        return jdbcClient.sql(FIND_BY_CHAT_ID_SQL)
+            .param(CHAT_ID, chatId)
             .query(ROW_MAPPER)
             .list();
     }
 
     @Override
     @Transactional
-    public List<LinkageTable> findByLinkId(long linkId) {
-        return jdbcClient.sql("SELECT * FROM linkage_table WHERE link_id = :link_id")
-            .param("link_id", linkId)
+    public List<LinkageTable> findByLinkId(Long linkId) {
+        return jdbcClient.sql(FIND_BY_LINK_ID_SQL)
+            .param(LINK_ID, linkId)
             .query(ROW_MAPPER)
             .list();
     }
 
     @Override
     @Transactional
-    public void removeByChatIdAndLinkId(long chatId, long linkId) {
-        jdbcClient.sql("DELETE FROM linkage_table WHERE chat_id = :chat_id AND link_id = :link_id")
-            .param("chat_id", chatId)
-            .param("link_id", linkId)
+    public void removeByChatIdAndLinkId(Long chatId, Long linkId) {
+        jdbcClient.sql(DELETE_SQL)
+            .param(CHAT_ID, chatId)
+            .param(LINK_ID, linkId)
             .update();
+    }
+
+    @Override
+    @Transactional
+    public Integer countByLinkId(Long linkId) {
+        return jdbcClient.sql(COUNT_BY_LINK_ID_SQL)
+            .param(LINK_ID, linkId)
+            .query(Integer.class).single();
     }
 }
