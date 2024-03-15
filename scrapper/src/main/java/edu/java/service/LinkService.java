@@ -4,16 +4,19 @@ import edu.java.dto.requests.AddLinkRequest;
 import edu.java.dto.requests.RemoveLinkRequest;
 import edu.java.dto.responses.LinkResponse;
 import edu.java.dto.responses.ListLinksResponse;
-import edu.java.entity.Link;
-import edu.java.entity.TelegramChat;
 import edu.java.repository.LinkRepository;
+import edu.java.repository.LinkageTableRepository;
 import edu.java.repository.TelegramChatRepository;
+import edu.java.repository.entity.Link;
+import edu.java.repository.entity.LinkageTable;
 import edu.java.service.exceptions.AlreadyTrackedLinkException;
 import edu.java.service.exceptions.NoSuchLinkException;
 import edu.java.service.exceptions.NonRegisterChatException;
-import java.util.ArrayList;
+import java.net.URI;
 import java.util.List;
-import java.util.Random;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,17 +25,19 @@ import org.springframework.stereotype.Service;
 public class LinkService {
     private final LinkRepository linkRepository;
     private final TelegramChatRepository telegramChatRepository;
+    private final LinkageTableRepository linkageTableRepository;
 
     public ListLinksResponse getAllLinks(Long chatId) {
         checkRegisterChat(chatId);
 
-        List<Link> links = telegramChatRepository.findById(chatId).getLinks();
-        List<LinkResponse> linkResponses = new ArrayList<>();
-
-        for (Link link : links) {
-            LinkResponse linkResponse = new LinkResponse(link.id(), link.url());
-            linkResponses.add(linkResponse);
-        }
+        List<LinkageTable> linkageTables = linkageTableRepository.findByChatId(chatId);
+        List<LinkResponse> linkResponses = linkageTables.stream()
+            .map(LinkageTable::getLinkId)
+            .map(linkRepository::findById)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .map(link -> new LinkResponse(link.getLinkId(), URI.create(link.getUrl())))
+            .collect(Collectors.toList());
 
         return new ListLinksResponse(linkResponses, linkResponses.size());
     }
@@ -40,38 +45,60 @@ public class LinkService {
     public void saveLink(Long chatId, AddLinkRequest addLinkRequest) {
         checkRegisterChat(chatId);
 
-        TelegramChat telegramChat = telegramChatRepository.findById(chatId);
-        List<Link> chatLinks = new ArrayList<>(telegramChat.getLinks());
+        List<LinkageTable> linkageTables = linkageTableRepository.findByChatId(chatId);
+        List<Link> chatLinks = linkageTables.stream()
+            .map(LinkageTable::getLinkId)
+            .map(linkRepository::findById)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .toList();
 
-        if (chatLinks.stream().anyMatch(link -> link.url().equals(addLinkRequest.link()))) {
+        Optional<Link> linkToSave = chatLinks.stream()
+            .filter(chatLink -> chatLink.getUrl().equals(addLinkRequest.link().toString()))
+            .findFirst();
+
+        if (linkToSave.isPresent()) {
             throw new AlreadyTrackedLinkException(addLinkRequest.link());
-        } else {
-            Link newLink = linkRepository.save(new Link(new Random().nextLong(), addLinkRequest.link()));
-            chatLinks.add(newLink);
-            telegramChat.setLinks(chatLinks);
-            telegramChatRepository.saveUser(telegramChat);
         }
+
+        linkRepository.save(new Link(addLinkRequest.link().toString()));
+        LinkageTable linkageTable =
+            new LinkageTable(chatId, linkRepository.findByUrl(addLinkRequest.link().toString()).get().getLinkId());
+        linkageTableRepository.save(linkageTable);
     }
 
+    //TODO проверка на то, используется ли где-то ссылка. если нет удалить из links
     public void deleteLinkFromChat(Long chatId, RemoveLinkRequest request) {
         checkRegisterChat(chatId);
 
-        TelegramChat telegramChat = telegramChatRepository.findById(chatId);
-        List<Link> chatLinks = new ArrayList<>(telegramChat.getLinks());
+        List<LinkageTable> linkageTables = linkageTableRepository.findByChatId(chatId);
+        List<Link> chatLinks = linkageTables.stream()
+            .map(LinkageTable::getLinkId)
+            .map(linkRepository::findById)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .toList();
 
-        if (chatLinks.stream().noneMatch(link -> link.url().equals(request.link()))) {
+        Optional<Link> linkToDelete = chatLinks.stream()
+            .filter(chatLink -> chatLink.getUrl().equals(request.link().toString()))
+            .findFirst();
+
+        if (linkToDelete.isEmpty()) {
             throw new NoSuchLinkException(request.link());
         }
 
-        chatLinks.removeIf(chatLink -> chatLink.url().equals(request.link()));
+        Long linkIdToDelete = linkToDelete.get().getLinkId();
 
-        telegramChat.setLinks(chatLinks);
-        telegramChatRepository.saveUser(telegramChat);
+        linkageTables.stream()
+            .filter(linkageTable -> Objects.equals(linkageTable.getLinkId(), linkIdToDelete))
+            .findFirst()
+            .ifPresent(linkageTable -> linkageTableRepository.removeByChatIdAndLinkId(
+                chatId,
+                linkageTable.getLinkId()
+            ));
     }
 
     private void checkRegisterChat(Long chatId) {
-        if (telegramChatRepository.findById(chatId) == null) {
-            throw new NonRegisterChatException(chatId);
-        }
+        telegramChatRepository.findById(chatId).orElseThrow(() -> new NonRegisterChatException(chatId));
     }
 }

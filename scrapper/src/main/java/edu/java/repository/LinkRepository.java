@@ -1,11 +1,14 @@
 package edu.java.repository;
 
-import edu.java.entity.Link;
-import java.net.URI;
+import edu.java.repository.entity.Link;
 import java.util.Optional;
 
 public interface LinkRepository {
-    Link save(Link link);
+    void save(Link link);
 
-    Optional<Link> findByUrl(URI url);
+    Optional<Link> findById(Long id);
+
+    Optional<Link> findByUrl(String url);
+
+    boolean removeById(Long id);
 }

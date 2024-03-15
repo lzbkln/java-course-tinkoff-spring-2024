@@ -1,14 +1,13 @@
 package edu.java.repository;
 
-import edu.java.entity.TelegramChat;
+import edu.java.repository.entity.TelegramChat;
+import java.util.Optional;
 
 public interface TelegramChatRepository {
 
     void saveUser(TelegramChat user);
 
-    TelegramChat findById(Long id);
+    Optional<TelegramChat> findById(Long id);
 
-    void updateUserById(Long id, TelegramChat updatedUser);
-
-    void deleteById(Long id);
+    boolean deleteById(Long id);
 }
