@@ -3,7 +3,6 @@ package edu.java.repository.jdbc;
 import edu.java.repository.TelegramChatRepository;
 import edu.java.repository.entity.TelegramChat;
 import edu.java.repository.jdbc.rowMappers.TelegramChatRowMapper;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-@Getter
 @RequiredArgsConstructor
 public class JdbcTelegramChatRepository implements TelegramChatRepository {
     private final JdbcClient jdbcClient;

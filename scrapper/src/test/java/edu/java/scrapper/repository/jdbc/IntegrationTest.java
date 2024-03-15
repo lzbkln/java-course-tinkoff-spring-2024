@@ -1,4 +1,4 @@
-package edu.java.scrapper;
+package edu.java.scrapper.repository.jdbc;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -12,15 +12,31 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.DirectoryResourceAccessor;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
+@SpringBootTest
+@Transactional
 public abstract class IntegrationTest {
     public static PostgreSQLContainer<?> POSTGRES;
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+
+    @BeforeEach
+    public void restartTest() {
+        jdbcTemplate.update("TRUNCATE linkage_table RESTART IDENTITY");
+        jdbcTemplate.update("TRUNCATE chats RESTART IDENTITY CASCADE");
+        jdbcTemplate.update("TRUNCATE links RESTART IDENTITY CASCADE");
+    }
 
     static {
         POSTGRES = new PostgreSQLContainer<>("postgres:16")
