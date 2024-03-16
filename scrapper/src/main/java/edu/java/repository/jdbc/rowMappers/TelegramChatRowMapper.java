@@ -11,7 +11,7 @@ public class TelegramChatRowMapper implements RowMapper<TelegramChat> {
     @SneakyThrows
     public TelegramChat mapRow(ResultSet rs, int rowNum) {
         return new TelegramChat(
-            rs.getLong("chat_id"),
+            rs.getLong("id"),
             rs.getTimestamp("created_at").toLocalDateTime()
         );
     }

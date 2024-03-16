@@ -6,6 +6,11 @@
     <changeSet id="init_tables" author="lzbkl">
         <sqlFile path="sql/01-chats.sql" relativeToChangelogFile="true"/>
         <sqlFile path="sql/02-links.sql" relativeToChangelogFile="true"/>
-        <sqlFile path="sql/03-linkage_table.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="sql/03-linkage.sql" relativeToChangelogFile="true"/>
+        <rollback>
+            <dropTable tableName="сhats"/>
+            <dropTable tableName="links"/>
+            <dropTable tableName="linkage"/>
+        </rollback>
     </changeSet>
 </databaseChangeLog>

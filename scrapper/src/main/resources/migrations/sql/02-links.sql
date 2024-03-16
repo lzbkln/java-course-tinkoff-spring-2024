@@ -6,7 +6,7 @@
 -- ****************************************************
 
 CREATE TABLE IF NOT EXISTS links (
-    link_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     url TEXT NOT NULL UNIQUE,
     last_updated_at TIMESTAMP WITH TIME ZONE
 );

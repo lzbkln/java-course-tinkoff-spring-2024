@@ -33,7 +33,7 @@ public abstract class IntegrationTest {
 
     @BeforeEach
     public void restartTest() {
-        jdbcTemplate.update("TRUNCATE linkage_table RESTART IDENTITY");
+        jdbcTemplate.update("TRUNCATE linkage RESTART IDENTITY");
         jdbcTemplate.update("TRUNCATE chats RESTART IDENTITY CASCADE");
         jdbcTemplate.update("TRUNCATE links RESTART IDENTITY CASCADE");
     }

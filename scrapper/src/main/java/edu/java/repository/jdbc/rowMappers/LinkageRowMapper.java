@@ -1,16 +1,15 @@
 package edu.java.repository.jdbc.rowMappers;
 
-import edu.java.repository.entity.LinkageTable;
+import edu.java.repository.entity.Linkage;
 import java.sql.ResultSet;
 import lombok.SneakyThrows;
 import org.springframework.jdbc.core.RowMapper;
 
-public class LinkageTableRowMapper implements RowMapper<LinkageTable> {
+public class LinkageRowMapper implements RowMapper<Linkage> {
     @SneakyThrows
     @Override
-    public LinkageTable mapRow(ResultSet rs, int rowNum) {
-        return new LinkageTable(
-            rs.getLong("id"),
+    public Linkage mapRow(ResultSet rs, int rowNum) {
+        return new Linkage(
             rs.getLong("chat_id"),
             rs.getLong("link_id")
         );

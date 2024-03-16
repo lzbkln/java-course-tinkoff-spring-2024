@@ -4,7 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import edu.java.ScrapperApplication;
-import edu.java.clients.GitHubClient;
+import edu.java.clients.sites.GitHubClient;
 import edu.java.dto.responses.GitHubResponseDTO;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;

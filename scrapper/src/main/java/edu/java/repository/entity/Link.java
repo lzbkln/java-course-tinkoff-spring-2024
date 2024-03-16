@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class Link {
-    private Long linkId;
+    private Long id;
     private String url;
     private LocalDateTime lastUpdatedAt;
 

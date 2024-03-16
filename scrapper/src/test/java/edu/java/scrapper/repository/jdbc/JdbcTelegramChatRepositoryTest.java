@@ -32,7 +32,7 @@ public class JdbcTelegramChatRepositoryTest extends IntegrationTest {
 
         TelegramChat foundTelegramChat = telegramChatRepository.findById(ID);
 
-        assertThat(foundTelegramChat.getChatId()).isEqualTo(telegramChat.getChatId());
+        assertThat(foundTelegramChat.getId()).isEqualTo(telegramChat.getId());
         assertThat(foundTelegramChat.getCreatedAt().toLocalDate()).isEqualTo(telegramChat.getCreatedAt().toLocalDate());
     }
 

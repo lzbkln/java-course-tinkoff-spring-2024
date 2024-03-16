@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class TelegramChat {
-    private Long chatId;
+    private Long id;
     private LocalDateTime createdAt;
 
     public TelegramChat(Long chatId) {

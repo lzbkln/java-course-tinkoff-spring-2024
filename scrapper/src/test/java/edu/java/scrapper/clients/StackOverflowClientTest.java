@@ -4,7 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import edu.java.ScrapperApplication;
-import edu.java.clients.StackOverflowClient;
+import edu.java.clients.sites.StackOverflowClient;
 import edu.java.dto.responses.StackOverflowResponseDTO;
 import java.time.Instant;
 import java.time.OffsetDateTime;

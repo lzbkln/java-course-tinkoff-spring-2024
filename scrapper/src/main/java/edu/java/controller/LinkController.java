@@ -3,7 +3,7 @@ package edu.java.controller;
 import edu.java.dto.requests.AddLinkRequest;
 import edu.java.dto.requests.RemoveLinkRequest;
 import edu.java.dto.responses.ListLinksResponse;
-import edu.java.service.jdbc.JdbcLinkService;
+import edu.java.service.LinkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/scrapper/links")
 @RequiredArgsConstructor
 public class LinkController implements LinkApi {
-    private final JdbcLinkService linkService;
+    private final LinkService linkService;
 
     @PostMapping
     public void addLink(@RequestHeader("Tg-Chat-Id") Long id, @RequestBody AddLinkRequest addLinkRequest) {

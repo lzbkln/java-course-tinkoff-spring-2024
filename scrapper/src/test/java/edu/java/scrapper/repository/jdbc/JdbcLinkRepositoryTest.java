@@ -43,7 +43,7 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
         Link link = new Link("https://example.com");
         linkRepository.save(link);
 
-        assertThat(linkRepository.findByUrl(link.getUrl()).getLinkId()).isEqualTo(1L);
+        assertThat(linkRepository.findByUrl(link.getUrl()).getId()).isEqualTo(1L);
         assertThat(linkRepository.findByUrl(link.getUrl()).getUrl()).isEqualTo(link.getUrl());
     }
 

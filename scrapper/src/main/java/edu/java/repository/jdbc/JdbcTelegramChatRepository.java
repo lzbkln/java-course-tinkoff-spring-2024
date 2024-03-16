@@ -14,16 +14,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class JdbcTelegramChatRepository implements TelegramChatRepository {
     private final JdbcClient jdbcClient;
     private static final RowMapper<TelegramChat> ROW_MAPPER = new TelegramChatRowMapper();
-    private static final String INSERT_SQL = "INSERT INTO chats (chat_id) VALUES (:chat_id)";
-    private static final String FIND_BY_ID_SQL = "SELECT * FROM chats WHERE chat_id = :chat_id";
-    private static final String DELETE_BY_ID_SQL = "DELETE FROM chats WHERE chat_id = :chat_id";
-    private static final String CHAT_ID = "chat_id";
+    private static final String INSERT_SQL = "INSERT INTO chats (id) VALUES (:id)";
+    private static final String FIND_BY_ID_SQL = "SELECT * FROM chats WHERE id = :id";
+    private static final String DELETE_BY_ID_SQL = "DELETE FROM chats WHERE id = :id";
+    private static final String CHAT_ID = "id";
 
     @Override
     @Transactional
     public void saveUser(TelegramChat user) {
         jdbcClient.sql(INSERT_SQL)
-            .param(CHAT_ID, user.getChatId())
+            .param(CHAT_ID, user.getId())
             .update();
     }
 

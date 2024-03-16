@@ -1,4 +1,4 @@
-package edu.java.clients;
+package edu.java.clients.sites;
 
 import edu.java.dto.responses.GitHubResponseDTO;
 import org.springframework.web.reactive.function.client.WebClient;
