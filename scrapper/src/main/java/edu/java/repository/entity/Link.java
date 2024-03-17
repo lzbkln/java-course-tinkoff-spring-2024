@@ -1,6 +1,6 @@
 package edu.java.repository.entity;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,10 +11,10 @@ import lombok.Setter;
 public class Link {
     private Long id;
     private String url;
-    private LocalDateTime lastUpdatedAt;
+    private OffsetDateTime lastUpdatedAt;
 
     public Link(String url) {
         this.url = url;
-        this.lastUpdatedAt = LocalDateTime.MIN;
+        this.lastUpdatedAt = OffsetDateTime.MIN;
     }
 }

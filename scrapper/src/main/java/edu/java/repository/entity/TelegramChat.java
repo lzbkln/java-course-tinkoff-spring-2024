@@ -1,6 +1,6 @@
 package edu.java.repository.entity;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,9 +10,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TelegramChat {
     private Long id;
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
     public TelegramChat(Long chatId) {
-        this(chatId, LocalDateTime.now());
+        this(chatId, OffsetDateTime.now());
     }
 }

@@ -6,20 +6,16 @@ import edu.java.dto.requests.LinkUpdateRequest;
 import edu.java.repository.entity.Link;
 import edu.java.service.LinkUpdater;
 import java.net.URI;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
 public class LinkUpdaterScheduler {
-    public static final Logger LOGGER = LogManager.getLogger();
     private final LinkUpdater linkUpdater;
     private final BotClient botClient;
     private final List<UpdateChecker> updateCheckers;
@@ -30,27 +26,31 @@ public class LinkUpdaterScheduler {
         List<Link> linksToUpdate = linkUpdater.findLinksToUpdate();
 
         for (Link link : linksToUpdate) {
-            Mono<String> updateMono = updateCheckers.stream()
-                .filter(checker -> checker.isMatched(URI.create(link.getUrl())))
-                .findFirst()
-                .map(checker -> checker.getUpdate(link))
-                .orElse(Mono.empty());
+            sendUpdate(link);
+        }
+    }
 
-            LOGGER.info(updateMono.subscribe());
-
-            updateMono.subscribe(update -> {
-                if (update != null) {
-                    LinkUpdateRequest request = new LinkUpdateRequest(
-                        link.getId(),
-                        link.getUrl(),
-                        update,
-                        linkUpdater.findTgChatIds(link.getId())
-                    );
-                    botClient.sendUpdate(request).subscribe();
-                }
-                link.setLastUpdatedAt(LocalDateTime.now());
-                linkUpdater.update(link);
-            });
+    private void sendUpdate(Link link) {
+        for (UpdateChecker updateChecker : updateCheckers) {
+            if (updateChecker.isMatched(URI.create(link.getUrl()))) {
+                updateChecker.getUpdate(link)
+                    .subscribe(update -> {
+                        if (update != null) {
+                            LinkUpdateRequest request = new LinkUpdateRequest(
+                                link.getId(),
+                                link.getUrl(),
+                                update,
+                                linkUpdater.findTgChatIds(link.getId())
+                            );
+                            botClient.sendUpdate(request).subscribe();
+                        }
+                        link.setLastUpdatedAt(OffsetDateTime.now());
+                        linkUpdater.update(link);
+                    });
+                break;
+            }
         }
     }
 }
+
+

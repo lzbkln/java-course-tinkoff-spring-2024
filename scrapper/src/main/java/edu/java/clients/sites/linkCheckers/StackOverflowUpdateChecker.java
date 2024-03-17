@@ -4,7 +4,6 @@ import edu.java.clients.sites.StackOverflowClient;
 import edu.java.dto.responses.StackOverflowResponseDTO;
 import edu.java.repository.entity.Link;
 import java.net.URI;
-import java.time.OffsetDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -17,18 +16,18 @@ public class StackOverflowUpdateChecker extends UpdateChecker {
     private final StackOverflowClient stackOverflowClient;
 
     public Mono<String> getUpdate(Link link) {
-        String questionId = extractQuestionIdFromUrl(link.getUrl());
+        String questionId = extractPath(link.getUrl());
         return stackOverflowClient.getQuestionsInfo(questionId)
             .mapNotNull(response -> {
                 StackOverflowResponseDTO.Question question = response.items().getFirst();
-                if (question.lastActivityDate().isAfter(OffsetDateTime.from(link.getLastUpdatedAt()))) {
+                if (question.lastActivityDate().isAfter(link.getLastUpdatedAt())) {
                     return "Обновление по ссылке %s".formatted(link.getUrl());
                 }
-                return null;
+                return "null";
             });
     }
 
-    private String extractQuestionIdFromUrl(String url) {
+    private String extractPath(String url) {
         String regex = "https?://stackoverflow.com/questions/(\\d+)/.*";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(url);
@@ -40,6 +39,6 @@ public class StackOverflowUpdateChecker extends UpdateChecker {
     }
 
     public boolean isMatched(URI uri) {
-        return uri.getHost().equals("https://stackoverflow.com/");
+        return uri.getHost().equals("stackoverflow.com");
     }
 }
