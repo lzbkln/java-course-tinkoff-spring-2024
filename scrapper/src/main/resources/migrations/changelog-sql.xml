@@ -7,10 +7,14 @@
         <sqlFile path="sql/01-chats.sql" relativeToChangelogFile="true"/>
         <sqlFile path="sql/02-links.sql" relativeToChangelogFile="true"/>
         <sqlFile path="sql/03-linkage.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="sql/04-github_branches.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="sql/05-stackoverflow_question.sql" relativeToChangelogFile="true"/>
         <rollback>
             <dropTable tableName="сhats"/>
             <dropTable tableName="links"/>
             <dropTable tableName="linkage"/>
+            <dropTable tableName="github_branches"/>
+            <dropTable tableName="stackoverflow_question"/>
         </rollback>
     </changeSet>
 </databaseChangeLog>
