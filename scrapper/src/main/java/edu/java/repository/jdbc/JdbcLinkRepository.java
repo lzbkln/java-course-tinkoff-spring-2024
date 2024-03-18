@@ -19,10 +19,12 @@ public class JdbcLinkRepository implements LinkRepository {
     private static final String FIND_BY_ID_SQL = "SELECT * FROM links WHERE id = :id";
     private static final String FIND_BY_URL_SQL = "SELECT * FROM links WHERE url = :url";
     private static final String REMOVE_BY_ID_SQL = "DELETE FROM links WHERE id = :id";
-    private static final String UPDATE_LINK =
+    private static final String UPDATE_LINK_SQL =
         "UPDATE links SET last_updated_at = :last_updated_at WHERE id = :id";
     private static final String FIND_LINKS_TO_UPDATE_SQL =
-        "SELECT * FROM links WHERE last_updated_at < NOW() - INTERVAL '2 hours'";
+        "SELECT * FROM links WHERE last_updated_at < NOW() - INTERVAL '1 hour'";
+    private static final String COUNT_BY_LINK_ID_SQL =
+        "SELECT COUNT(*) FROM links WHERE url = :url";
     private static final String ID = "id";
     private static final String URL = "url";
     private static final String LAST_UPDATED_AT = "last_updated_at";
@@ -56,6 +58,15 @@ public class JdbcLinkRepository implements LinkRepository {
 
     @Override
     @Transactional
+    public boolean findByUrlBool(String url) {
+        int count = jdbcClient.sql(COUNT_BY_LINK_ID_SQL)
+            .param(URL, url)
+            .query(Integer.class).single();
+        return count > 0;
+    }
+
+    @Override
+    @Transactional
     public void removeById(Long id) {
         jdbcClient.sql(REMOVE_BY_ID_SQL)
             .param(ID, id)
@@ -65,7 +76,7 @@ public class JdbcLinkRepository implements LinkRepository {
     @Override
     @Transactional
     public void updateLink(Link link) {
-        jdbcClient.sql(UPDATE_LINK)
+        jdbcClient.sql(UPDATE_LINK_SQL)
             .param(LAST_UPDATED_AT, link.getLastUpdatedAt())
             .param(ID, link.getId())
             .update();

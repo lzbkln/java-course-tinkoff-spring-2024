@@ -10,6 +10,8 @@ public interface LinkRepository {
 
     Link findByUrl(String url);
 
+    boolean findByUrlBool(String url);
+
     void removeById(Long id);
 
     void updateLink(Link link);

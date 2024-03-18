@@ -1,7 +1,9 @@
 package edu.java.clients.sites.util;
 
 import edu.java.clients.sites.GitHubClient;
+import edu.java.clients.sites.StackOverflowClient;
 import edu.java.dto.responses.GithubBranchResponseDTO;
+import edu.java.dto.responses.StackOverflowResponseDTO;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -9,22 +11,31 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @Component
 public class Utils {
     private final GitHubClient gitHubClient;
+    private final StackOverflowClient stackOverflowClient;
 
-    public Set<String> getBranches(String url) {
-        GithubBranchResponseDTO[] branches =
-            gitHubClient.getBranchesFromUserRepository(extractPathForGithub(url)).block();
-        return convertBranchesToSet(branches);
+    public Mono<GithubBranchResponseDTO[]> getBranches(String url) {
+        return gitHubClient.getBranchesFromUserRepository(extractPathForGithub(url));
+
     }
 
     public Set<String> convertBranchesToSet(GithubBranchResponseDTO[] branches) {
         return Arrays.stream(branches)
             .map(GithubBranchResponseDTO::name)
             .collect(Collectors.toSet());
+    }
+
+    public int getAnswerCount(String url) {
+        return stackOverflowClient.getQuestionsInfo(extractPathForStackoverflow(url))
+            .mapNotNull(response -> {
+                StackOverflowResponseDTO.Question question = response.items().getFirst();
+                return question.answerCount();
+            }).blockOptional().get();
     }
 
     public String extractPathForGithub(String url) {

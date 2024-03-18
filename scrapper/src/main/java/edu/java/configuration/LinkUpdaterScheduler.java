@@ -8,6 +8,8 @@ import edu.java.service.LinkUpdater;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -31,25 +33,33 @@ public class LinkUpdaterScheduler {
     }
 
     private void sendUpdate(Link link) {
-        for (UpdateChecker updateChecker : updateCheckers) {
-            if (updateChecker.isMatched(URI.create(link.getUrl()))) {
-                updateChecker.getUpdate(link)
-                    .subscribe(update -> {
-                        if (update != null) {
-                            LinkUpdateRequest request = new LinkUpdateRequest(
-                                link.getId(),
-                                link.getUrl(),
-                                update,
-                                linkUpdater.findTgChatIds(link.getId())
-                            );
-                            botClient.sendUpdate(request).subscribe();
-                        }
+        Optional<UpdateChecker> updateChecker = updateCheckers.stream()
+            .filter(checker -> checker.isMatched(URI.create(link.getUrl())))
+            .findFirst();
+
+        updateChecker.ifPresent(checker -> {
+            checker.getUpdate(link)
+                .filter(Objects::nonNull)
+                .doOnNext(update -> {
+                    LinkUpdateRequest request = new LinkUpdateRequest(
+                        link.getId(),
+                        link.getUrl(),
+                        update,
+                        linkUpdater.findTgChatIds(link.getId())
+                    );
+                    botClient.sendUpdate(request).subscribe();
+                })
+                .subscribe(
+                    update -> {
+                    },
+                    error -> {
+                    },
+                    () -> {
                         link.setLastUpdatedAt(OffsetDateTime.now());
                         linkUpdater.update(link);
-                    });
-                break;
-            }
-        }
+                    }
+                );
+        });
     }
 }
 
