@@ -1,11 +1,12 @@
 package edu.java.clients.sites.linkCheckers;
 
 import edu.java.clients.sites.StackOverflowClient;
+import edu.java.clients.sites.util.Utils;
 import edu.java.dto.responses.StackOverflowResponseDTO;
+import edu.java.repository.StackOverflowQuestionRepository;
 import edu.java.repository.entity.Link;
+import edu.java.repository.entity.StackOverflowQuestion;
 import java.net.URI;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -14,28 +15,26 @@ import reactor.core.publisher.Mono;
 @Component
 public class StackOverflowUpdateChecker extends UpdateChecker {
     private final StackOverflowClient stackOverflowClient;
+    private final StackOverflowQuestionRepository stackOverflowQuestionRepository;
+    private final Utils utils;
 
     public Mono<String> getUpdate(Link link) {
-        String questionId = extractPath(link.getUrl());
+        String questionId = utils.extractPathForStackoverflow(link.getUrl());
         return stackOverflowClient.getQuestionsInfo(questionId)
             .mapNotNull(response -> {
                 StackOverflowResponseDTO.Question question = response.items().getFirst();
                 if (question.lastActivityDate().isAfter(link.getLastUpdatedAt())) {
-                    return "Обновление по ссылке %s".formatted(link.getUrl());
+                    int oldCountQuestions = stackOverflowQuestionRepository.findByLinkId(link.getId()).getAnswerCount();
+                    if (oldCountQuestions < question.answerCount()) {
+                        stackOverflowQuestionRepository.updateData(new StackOverflowQuestion(
+                            link.getId(),
+                            question.answerCount()
+                        ));
+                        return "Новый ответ на вопрос: %s".formatted(link.getUrl());
+                    }
                 }
-                return "null";
+                return null;
             });
-    }
-
-    private String extractPath(String url) {
-        String regex = "https?://stackoverflow.com/questions/(\\d+)/.*";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(url);
-
-        if (matcher.matches()) {
-            return matcher.group(1);
-        }
-        return null;
     }
 
     public boolean isMatched(URI uri) {
