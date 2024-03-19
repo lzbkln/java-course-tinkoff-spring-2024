@@ -1,4 +1,4 @@
-package edu.java.service.jdbc;
+package edu.java.service.jooq;
 
 import edu.java.repository.LinkRepository;
 import edu.java.repository.LinkageRepository;
@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class JdbcLinkUpdater implements LinkUpdater {
+public class JooqLinkUpdater implements LinkUpdater {
     private final LinkRepository linkRepository;
     private final LinkageRepository linkageTableRepository;
 

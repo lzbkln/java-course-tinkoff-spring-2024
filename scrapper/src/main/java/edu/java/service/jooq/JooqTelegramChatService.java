@@ -1,4 +1,4 @@
-package edu.java.service.jdbc;
+package edu.java.service.jooq;
 
 import edu.java.repository.TelegramChatRepository;
 import edu.java.repository.entity.TelegramChat;
@@ -10,7 +10,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 @RequiredArgsConstructor
-public class JdbcTelegramChatService implements TelegramChatService {
+public class JooqTelegramChatService implements TelegramChatService {
     private final TelegramChatRepository telegramChatRepository;
 
     @Override

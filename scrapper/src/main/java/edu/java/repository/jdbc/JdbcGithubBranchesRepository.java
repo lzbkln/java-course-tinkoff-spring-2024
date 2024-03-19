@@ -6,10 +6,8 @@ import edu.java.repository.jdbc.rowMappers.GithubBranchesRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Repository
 @RequiredArgsConstructor
 public class JdbcGithubBranchesRepository implements GithubBranchesRepository {
     private final JdbcClient jdbcClient;

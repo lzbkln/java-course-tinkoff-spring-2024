@@ -1,4 +1,4 @@
-package edu.java.service.jdbc;
+package edu.java.service.jooq;
 
 import edu.java.clients.sites.util.Utils;
 import edu.java.dto.responses.GithubBranchResponseDTO;
@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 @RequiredArgsConstructor
-public class JdbcLinkService implements LinkService {
+public class JooqLinkService implements LinkService {
     private final LinkRepository linkRepository;
     private final TelegramChatRepository telegramChatRepository;
     private final LinkageRepository linkageTableRepository;
