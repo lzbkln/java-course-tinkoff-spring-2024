@@ -15,6 +15,6 @@ public class Link {
 
     public Link(String url) {
         this.url = url;
-        this.lastUpdatedAt = OffsetDateTime.MIN;
+        this.lastUpdatedAt = OffsetDateTime.now();
     }
 }

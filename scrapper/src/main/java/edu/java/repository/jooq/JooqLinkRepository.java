@@ -16,7 +16,7 @@ public class JooqLinkRepository implements LinkRepository {
     @Override
     @Transactional
     public void save(Link link) {
-        dslContext.insertInto(LINKS)
+        dslContext.insertInto(LINKS, LINKS.URL, LINKS.LAST_UPDATED_AT)
             .values(link.getUrl(), link.getLastUpdatedAt())
             .execute();
     }

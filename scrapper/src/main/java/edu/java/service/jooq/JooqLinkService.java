@@ -13,6 +13,7 @@ import edu.java.repository.entity.GithubBranches;
 import edu.java.repository.entity.Link;
 import edu.java.repository.entity.Linkage;
 import edu.java.repository.entity.StackOverflowQuestion;
+import edu.java.repository.entity.TelegramChat;
 import edu.java.service.LinkService;
 import edu.java.service.exceptions.NoSuchLinkException;
 import edu.java.service.exceptions.NonRegisterChatException;
@@ -83,9 +84,8 @@ public class JooqLinkService implements LinkService {
     }
 
     private void checkRegisterChat(Long chatId) {
-        try {
-            telegramChatRepository.findById(chatId);
-        } catch (EmptyResultDataAccessException e) {
+        TelegramChat telegramChat = telegramChatRepository.findById(chatId);
+        if (telegramChat == null) {
             throw new NonRegisterChatException(chatId);
         }
     }

@@ -14,8 +14,7 @@ public class JooqGithubBranchesRepository implements GithubBranchesRepository {
     @Override
     @Transactional
     public void save(GithubBranches githubBranches) {
-        dslContext.insertInto(GITHUB_BRANCHES)
-            .columns(GITHUB_BRANCHES.LINK_ID, GITHUB_BRANCHES.BRANCHES)
+        dslContext.insertInto(GITHUB_BRANCHES, GITHUB_BRANCHES.LINK_ID, GITHUB_BRANCHES.BRANCHES)
             .values(githubBranches.getLinkId(), githubBranches.getBranches().toArray(new String[0]))
             .execute();
     }

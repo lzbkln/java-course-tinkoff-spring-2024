@@ -7,5 +7,5 @@
 
 CREATE TABLE IF NOT EXISTS github_branches (
     link_id BIGINT REFERENCES links (id),
-    branches TEXT ARRAY NOT NULL
+    branches VARCHAR(255) ARRAY NOT NULL
 );

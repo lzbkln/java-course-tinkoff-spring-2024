@@ -68,7 +68,7 @@ public class GithubBranches extends TableImpl<GithubBranchesRecord> {
      * The column <code>GITHUB_BRANCHES.BRANCHES</code>.
      */
     public final TableField<GithubBranchesRecord, String[]> BRANCHES =
-        createField(DSL.name("BRANCHES"), SQLDataType.VARCHAR(1000000000).nullable(false).array(), this, "");
+        createField(DSL.name("BRANCHES"), SQLDataType.VARCHAR(255).nullable(false).array(), this, "");
 
     private GithubBranches(Name alias, Table<GithubBranchesRecord> aliased) {
         this(alias, aliased, null);

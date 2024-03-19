@@ -9,7 +9,7 @@ app:
     default-url: https://api.github.com
   bot-link:
     link: http://localhost:8090
-  database-access-type: JOOQ
+  database-access-type: JDBC
 
 
 spring:
