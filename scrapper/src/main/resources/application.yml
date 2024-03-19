@@ -15,7 +15,7 @@ spring:
     name: scrapper
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${URL}
+    url: "jdbc:postgresql://localhost:5433/scrapper"
     username: ${USER}
     password: ${PASSWORD}
   liquibase:

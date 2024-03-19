@@ -2,12 +2,10 @@
 -- ****************************************************
 -- Create Table: github_branches
 -- Author: lzbkl
--- Date: 03/18/2024
+-- Date: 03/17/2024
 -- ****************************************************
 
 CREATE TABLE IF NOT EXISTS github_branches (
-    link_id BIGINT,
-    branches TEXT[] NOT NULL,
-
-    CONSTRAINT fk_link_id FOREIGN KEY (link_id) REFERENCES links (id)
+    link_id BIGINT REFERENCES links (id),
+    branches TEXT ARRAY NOT NULL
 );
