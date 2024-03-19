@@ -65,12 +65,11 @@ public class GitHubClientTest {
                         "full_name": "%s",
                         "created_at": "%s",
                         "updated_at": "%s",
-                        "pushed_at": "%s",
+                        "pushed_at": "%s"
                     }
                     """.formatted(repositoryPath, createdAt, updatedAt, pushedAt))));
 
         GitHubResponseDTO response = gitHubClient.getUserRepository(repositoryPath).block();
-        System.out.println(response);
         Objects.requireNonNull(response);
         assertEquals(repositoryPath, response.fullName());
         assertEquals(createdAt, response.createdAt());
