@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
@@ -26,18 +27,21 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
 @SpringBootTest
-@Transactional
 @TestPropertySource(locations = "classpath:application-test.yml")
+@ActiveProfiles("test")
+@Transactional
 public abstract class IntegrationTest {
     public static PostgreSQLContainer<?> POSTGRES;
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    public JdbcTemplate jdbcTemplate;
 
     @BeforeEach
     public void restartTest() {
         jdbcTemplate.update("TRUNCATE linkage RESTART IDENTITY");
         jdbcTemplate.update("TRUNCATE chats RESTART IDENTITY CASCADE");
         jdbcTemplate.update("TRUNCATE links RESTART IDENTITY CASCADE");
+        jdbcTemplate.update("TRUNCATE github_branches RESTART IDENTITY CASCADE");
+        jdbcTemplate.update("TRUNCATE stackoverflow_question RESTART IDENTITY CASCADE");
     }
 
     static {

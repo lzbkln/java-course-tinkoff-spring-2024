@@ -14,6 +14,7 @@ spring:
   application:
     name: scrapper
   datasource:
+    driver-class-name: org.postgresql.Driver
     url: ${URL}
     username: ${USER}
     password: ${PASSWORD}

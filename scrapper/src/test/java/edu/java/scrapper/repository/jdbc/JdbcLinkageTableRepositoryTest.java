@@ -3,12 +3,15 @@ package edu.java.scrapper.repository.jdbc;
 import edu.java.repository.LinkageRepository;
 import edu.java.repository.entity.Linkage;
 import edu.java.repository.jdbc.rowMappers.LinkageRowMapper;
+
 import java.util.List;
 import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class JdbcLinkageTableRepositoryTest extends IntegrationTest {

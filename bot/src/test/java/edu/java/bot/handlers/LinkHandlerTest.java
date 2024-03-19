@@ -32,7 +32,7 @@ public class LinkHandlerTest {
     public void testStackOverflowLinkHandlerWithValidLink() {
         LinkHandler stackOverflowLinkHandler = new StackOverflowLinkHandler();
 
-        boolean isValid = stackOverflowLinkHandler.isValid("https://stackoverflow.com/questions");
+        boolean isValid = stackOverflowLinkHandler.isValid("https://stackoverflow.com/questions/544535/test");
 
         assertTrue(isValid);
     }
