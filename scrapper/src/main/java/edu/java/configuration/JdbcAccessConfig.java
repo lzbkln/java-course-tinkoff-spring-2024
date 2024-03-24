@@ -15,7 +15,7 @@ import edu.java.service.LinkService;
 import edu.java.service.LinkUpdater;
 import edu.java.service.TelegramChatService;
 import edu.java.service.jdbc.JdbcLinkService;
-import edu.java.service.jdbc.JdbcLinkUpdater;
+import edu.java.service.jdbc.JdbcLinkUpdaterService;
 import edu.java.service.jdbc.JdbcTelegramChatService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -52,7 +52,7 @@ public class JdbcAccessConfig {
 
     @Bean
     public LinkUpdater linkUpdater(LinkRepository linkRepository, LinkageRepository linkageRepository) {
-        return new JdbcLinkUpdater(linkRepository, linkageRepository);
+        return new JdbcLinkUpdaterService(linkRepository, linkageRepository);
     }
 
     @Bean

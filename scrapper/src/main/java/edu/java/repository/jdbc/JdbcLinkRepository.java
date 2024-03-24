@@ -7,7 +7,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class JdbcLinkRepository implements LinkRepository {
@@ -28,7 +27,6 @@ public class JdbcLinkRepository implements LinkRepository {
     private static final String LAST_UPDATED_AT = "last_updated_at";
 
     @Override
-    @Transactional
     public void save(Link link) {
         jdbcClient.sql(INSERT_SQL)
             .param(URL, link.getUrl())
@@ -37,7 +35,6 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Override
-    @Transactional
     public Link findById(Long id) {
         return jdbcClient.sql(FIND_BY_ID_SQL)
             .param(ID, id)
@@ -46,7 +43,6 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Override
-    @Transactional
     public Link findByUrl(String url) {
         return jdbcClient.sql(FIND_BY_URL_SQL)
             .param(URL, url)
@@ -55,7 +51,6 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Override
-    @Transactional
     public boolean findByUrlBool(String url) {
         int count = jdbcClient.sql(COUNT_BY_LINK_ID_SQL)
             .param(URL, url)
@@ -64,7 +59,6 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Override
-    @Transactional
     public void removeById(Long id) {
         jdbcClient.sql(REMOVE_BY_ID_SQL)
             .param(ID, id)
@@ -72,7 +66,6 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Override
-    @Transactional
     public void updateLink(Link link) {
         jdbcClient.sql(UPDATE_LINK_SQL)
             .param(LAST_UPDATED_AT, link.getLastUpdatedAt())
@@ -81,7 +74,6 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Override
-    @Transactional
     public List<Link> findLinksToUpdate() {
         return jdbcClient.sql(FIND_LINKS_TO_UPDATE_SQL)
             .query(ROW_MAPPER)

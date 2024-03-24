@@ -15,7 +15,7 @@ import edu.java.service.LinkService;
 import edu.java.service.LinkUpdater;
 import edu.java.service.TelegramChatService;
 import edu.java.service.jooq.JooqLinkService;
-import edu.java.service.jooq.JooqLinkUpdater;
+import edu.java.service.jooq.JooqLinkUpdaterService;
 import edu.java.service.jooq.JooqTelegramChatService;
 import org.jooq.DSLContext;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -52,7 +52,7 @@ public class JooqAccessConfig {
 
     @Bean
     public LinkUpdater linkUpdater(LinkRepository linkRepository, LinkageRepository linkageRepository) {
-        return new JooqLinkUpdater(linkRepository, linkageRepository);
+        return new JooqLinkUpdaterService(linkRepository, linkageRepository);
     }
 
     @Bean

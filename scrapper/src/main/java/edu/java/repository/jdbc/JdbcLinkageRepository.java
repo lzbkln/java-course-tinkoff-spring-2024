@@ -7,7 +7,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class JdbcLinkageRepository implements LinkageRepository {
@@ -27,7 +26,6 @@ public class JdbcLinkageRepository implements LinkageRepository {
     private static final String CHAT_ID = "chat_id";
 
     @Override
-    @Transactional
     public void save(Linkage linkage) {
         jdbcClient.sql(INSERT_SQL)
             .param(CHAT_ID, linkage.getChatId())
@@ -36,7 +34,6 @@ public class JdbcLinkageRepository implements LinkageRepository {
     }
 
     @Override
-    @Transactional
     public List<Linkage> findByChatId(Long chatId) {
         return jdbcClient.sql(FIND_BY_CHAT_ID_SQL)
             .param(CHAT_ID, chatId)
@@ -45,7 +42,6 @@ public class JdbcLinkageRepository implements LinkageRepository {
     }
 
     @Override
-    @Transactional
     public List<Linkage> findByLinkId(Long linkId) {
         return jdbcClient.sql(FIND_BY_LINK_ID_SQL)
             .param(LINK_ID, linkId)
@@ -54,7 +50,6 @@ public class JdbcLinkageRepository implements LinkageRepository {
     }
 
     @Override
-    @Transactional
     public void removeByChatIdAndLinkId(Long chatId, Long linkId) {
         jdbcClient.sql(DELETE_SQL)
             .param(CHAT_ID, chatId)
@@ -63,7 +58,6 @@ public class JdbcLinkageRepository implements LinkageRepository {
     }
 
     @Override
-    @Transactional
     public Integer countByLinkId(Long linkId) {
         return jdbcClient.sql(COUNT_BY_LINK_ID_SQL)
             .param(LINK_ID, linkId)

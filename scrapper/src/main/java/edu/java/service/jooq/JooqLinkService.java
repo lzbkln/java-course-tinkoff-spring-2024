@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class JooqLinkService implements LinkService {
@@ -37,6 +38,7 @@ public class JooqLinkService implements LinkService {
     private static final String STACK_OVERFLOW_HOST = "stackoverflow.com";
 
     @Override
+    @Transactional
     public void saveLink(Long tgChatId, URI url) {
         checkRegisterChat(tgChatId);
 
@@ -53,6 +55,7 @@ public class JooqLinkService implements LinkService {
     }
 
     @Override
+    @Transactional
     public void deleteLink(Long tgChatId, URI url) {
         checkRegisterChat(tgChatId);
         try {
@@ -69,6 +72,7 @@ public class JooqLinkService implements LinkService {
     }
 
     @Override
+    @Transactional
     public ListLinksResponse getAllLinksResponse(Long tgChatId) {
         checkRegisterChat(tgChatId);
 

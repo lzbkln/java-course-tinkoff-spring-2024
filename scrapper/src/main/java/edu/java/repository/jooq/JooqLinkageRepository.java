@@ -5,7 +5,6 @@ import edu.java.repository.entity.Linkage;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.springframework.transaction.annotation.Transactional;
 import static edu.java.domain.jooq.tables.Linkage.LINKAGE;
 
 @RequiredArgsConstructor
@@ -13,7 +12,6 @@ public class JooqLinkageRepository implements LinkageRepository {
     private final DSLContext dslContext;
 
     @Override
-    @Transactional
     public void save(Linkage linkage) {
         dslContext.insertInto(LINKAGE)
             .values(linkage.getChatId(), linkage.getLinkId())
@@ -21,7 +19,6 @@ public class JooqLinkageRepository implements LinkageRepository {
     }
 
     @Override
-    @Transactional
     public List<Linkage> findByChatId(Long chatId) {
         return dslContext.selectFrom(LINKAGE)
             .where(LINKAGE.CHAT_ID.eq(chatId))
@@ -29,7 +26,6 @@ public class JooqLinkageRepository implements LinkageRepository {
     }
 
     @Override
-    @Transactional
     public List<Linkage> findByLinkId(Long linkId) {
         return dslContext.selectFrom(LINKAGE)
             .where(LINKAGE.LINK_ID.eq(linkId))
@@ -37,7 +33,6 @@ public class JooqLinkageRepository implements LinkageRepository {
     }
 
     @Override
-    @Transactional
     public void removeByChatIdAndLinkId(Long chatId, Long linkId) {
         dslContext.deleteFrom(LINKAGE)
             .where(LINKAGE.CHAT_ID.eq(chatId).and(LINKAGE.LINK_ID.eq(linkId)))
@@ -45,7 +40,6 @@ public class JooqLinkageRepository implements LinkageRepository {
     }
 
     @Override
-    @Transactional
     public Integer countByLinkId(Long linkId) {
         return dslContext.selectCount()
             .from(LINKAGE)

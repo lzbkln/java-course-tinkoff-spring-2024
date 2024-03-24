@@ -6,7 +6,6 @@ import edu.java.repository.jdbc.rowMappers.GithubBranchesRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class JdbcGithubBranchesRepository implements GithubBranchesRepository {
@@ -23,7 +22,6 @@ public class JdbcGithubBranchesRepository implements GithubBranchesRepository {
     private static final String BRANCHES = "branches";
 
     @Override
-    @Transactional
     public void save(GithubBranches githubBranches) {
         jdbcClient.sql(INSERT_SQL)
             .param(LINK_ID, githubBranches.getLinkId())
@@ -32,7 +30,6 @@ public class JdbcGithubBranchesRepository implements GithubBranchesRepository {
     }
 
     @Override
-    @Transactional
     public GithubBranches findByLinkId(Long linkId) {
         return jdbcClient.sql(FIND_BY_ID_SQL)
             .param(LINK_ID, linkId)
@@ -41,7 +38,6 @@ public class JdbcGithubBranchesRepository implements GithubBranchesRepository {
     }
 
     @Override
-    @Transactional
     public void updateData(GithubBranches githubBranches) {
         jdbcClient.sql(UPDATE_LINK_SQL)
             .param(LINK_ID, githubBranches.getLinkId())
@@ -50,7 +46,6 @@ public class JdbcGithubBranchesRepository implements GithubBranchesRepository {
     }
 
     @Override
-    @Transactional
     public void removeByLinkId(Long linkId) {
         jdbcClient.sql(REMOVE_BY_ID_SQL)
             .param(LINK_ID, linkId)

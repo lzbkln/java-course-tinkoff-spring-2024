@@ -6,7 +6,6 @@ import edu.java.repository.jdbc.rowMappers.TelegramChatRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class JdbcTelegramChatRepository implements TelegramChatRepository {
@@ -18,7 +17,6 @@ public class JdbcTelegramChatRepository implements TelegramChatRepository {
     private static final String CHAT_ID = "id";
 
     @Override
-    @Transactional
     public void saveUser(TelegramChat user) {
         jdbcClient.sql(INSERT_SQL)
             .param(CHAT_ID, user.getId())
@@ -34,7 +32,6 @@ public class JdbcTelegramChatRepository implements TelegramChatRepository {
     }
 
     @Override
-    @Transactional
     public void deleteById(Long id) {
         jdbcClient.sql(DELETE_BY_ID_SQL)
             .param(CHAT_ID, id)

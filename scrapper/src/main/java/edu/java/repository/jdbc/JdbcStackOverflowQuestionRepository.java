@@ -6,7 +6,6 @@ import edu.java.repository.jdbc.rowMappers.StackOverflowQuestionRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class JdbcStackOverflowQuestionRepository implements StackOverflowQuestionRepository {
@@ -23,7 +22,6 @@ public class JdbcStackOverflowQuestionRepository implements StackOverflowQuestio
     private static final String COUNT = "answer_count";
 
     @Override
-    @Transactional
     public void save(StackOverflowQuestion stackOverflowQuestion) {
         jdbcClient.sql(INSERT_SQL)
             .param(LINK_ID, stackOverflowQuestion.getLinkId())
@@ -32,7 +30,6 @@ public class JdbcStackOverflowQuestionRepository implements StackOverflowQuestio
     }
 
     @Override
-    @Transactional
     public StackOverflowQuestion findByLinkId(Long linkId) {
         return jdbcClient.sql(FIND_BY_ID_SQL)
             .param(LINK_ID, linkId)
@@ -41,7 +38,6 @@ public class JdbcStackOverflowQuestionRepository implements StackOverflowQuestio
     }
 
     @Override
-    @Transactional
     public void updateData(StackOverflowQuestion stackOverflowQuestion) {
         jdbcClient.sql(UPDATE_LINK_SQL)
             .param(LINK_ID, stackOverflowQuestion.getLinkId())
@@ -50,7 +46,6 @@ public class JdbcStackOverflowQuestionRepository implements StackOverflowQuestio
     }
 
     @Override
-    @Transactional
     public void removeByLinkId(Long linkId) {
         jdbcClient.sql(REMOVE_BY_ID_SQL)
             .param(LINK_ID, linkId)
