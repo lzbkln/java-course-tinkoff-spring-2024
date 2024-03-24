@@ -24,7 +24,7 @@ services:
       - --password=postgres
       - update
     volumes:
-      - ./scrapper/src/main/resources/migrations:/liquibase/changelog/
+      - ./migrations:/liquibase/changelog/
     networks:
       - backend
 
