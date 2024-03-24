@@ -28,6 +28,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Transactional
 public abstract class IntegrationTest {
     public static PostgreSQLContainer<?> POSTGRES;
+
     @Autowired
     public JdbcTemplate jdbcTemplate;
 
