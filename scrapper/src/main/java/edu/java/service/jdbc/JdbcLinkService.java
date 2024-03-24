@@ -1,0 +1,133 @@
+package edu.java.service.jdbc;
+
+import edu.java.clients.sites.util.Utils;
+import edu.java.dto.responses.GithubBranchResponseDTO;
+import edu.java.dto.responses.LinkResponse;
+import edu.java.dto.responses.ListLinksResponse;
+import edu.java.repository.GithubBranchesRepository;
+import edu.java.repository.LinkRepository;
+import edu.java.repository.LinkageRepository;
+import edu.java.repository.StackOverflowQuestionRepository;
+import edu.java.repository.TelegramChatRepository;
+import edu.java.repository.entity.GithubBranches;
+import edu.java.repository.entity.Link;
+import edu.java.repository.entity.Linkage;
+import edu.java.repository.entity.StackOverflowQuestion;
+import edu.java.service.LinkService;
+import edu.java.service.exceptions.NoSuchLinkException;
+import edu.java.service.exceptions.NonRegisterChatException;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.transaction.annotation.Transactional;
+
+@RequiredArgsConstructor
+public class JdbcLinkService implements LinkService {
+    private final LinkRepository linkRepository;
+    private final TelegramChatRepository telegramChatRepository;
+    private final LinkageRepository linkageTableRepository;
+    private final GithubBranchesRepository githubBranchesRepository;
+    private final StackOverflowQuestionRepository stackOverflowQuestionRepository;
+    private final Utils clientUtil;
+    private static final String GITHUB_HOST = "github.com";
+    private static final String STACK_OVERFLOW_HOST = "stackoverflow.com";
+
+    @Override
+    @Transactional
+    public void saveLink(Long tgChatId, URI url) {
+        checkRegisterChat(tgChatId);
+
+        if (linkRepository.findByUrlBool(url.toString())) {
+            saveLinkage(tgChatId, linkRepository.findByUrl(url.toString()).getId());
+        } else {
+            Link newLink = new Link(url.toString());
+            Long linkId = saveNewLink(newLink);
+
+            saveLinkage(tgChatId, linkId);
+            saveAdditionalData(linkId, url);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteLink(Long tgChatId, URI url) {
+        checkRegisterChat(tgChatId);
+        try {
+            Link link = linkRepository.findByUrl(url.toString());
+            Long linkId = link.getId();
+            linkageTableRepository.removeByChatIdAndLinkId(tgChatId, linkId);
+            if (linkageTableRepository.countByLinkId(linkId) == 0) {
+                removeAdditionalData(linkId, url);
+                linkRepository.removeById(linkId);
+            }
+        } catch (EmptyResultDataAccessException e) {
+            throw new NoSuchLinkException(url);
+        }
+    }
+
+    @Override
+    @Transactional
+    public ListLinksResponse getAllLinksResponse(Long tgChatId) {
+        checkRegisterChat(tgChatId);
+
+        List<Link> links = linkageTableRepository.findByChatId(tgChatId).stream()
+            .map(Linkage::getLinkId)
+            .map(linkRepository::findById)
+            .toList();
+
+        List<LinkResponse> linkResponses = links.stream()
+            .map(link -> new LinkResponse(link.getId(), URI.create(link.getUrl())))
+            .collect(Collectors.toList());
+        return new ListLinksResponse(linkResponses, linkResponses.size());
+    }
+
+    private void checkRegisterChat(Long chatId) {
+        try {
+            telegramChatRepository.findById(chatId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new NonRegisterChatException(chatId);
+        }
+    }
+
+    private void saveLinkage(Long tgChatId, Long linkId) {
+        linkageTableRepository.save(new Linkage(tgChatId, linkId));
+    }
+
+    private Long saveNewLink(Link link) {
+        linkRepository.save(link);
+        return linkRepository.findByUrl(link.getUrl()).getId();
+    }
+
+    private void saveAdditionalData(Long linkId, URI url) {
+        if (url.getHost().equals(GITHUB_HOST)) {
+            clientUtil.getBranches(url.toString())
+                .map(response -> {
+                    Set<String> branches = Arrays.stream(response)
+                        .map(GithubBranchResponseDTO::name)
+                        .collect(Collectors.toSet());
+                    return new GithubBranches(linkId, branches);
+                })
+                .doOnSuccess(githubBranchesRepository::save)
+                .subscribe();
+        }
+        if (url.getHost().equals(STACK_OVERFLOW_HOST)) {
+            stackOverflowQuestionRepository.save(new StackOverflowQuestion(
+                linkId,
+                clientUtil.getAnswerCount(url.toString())
+            ));
+        }
+    }
+
+    private void removeAdditionalData(Long linkId, URI url) {
+        if (url.getHost().equals(GITHUB_HOST)) {
+            githubBranchesRepository.removeByLinkId(linkId);
+        }
+        if (url.getHost().equals(STACK_OVERFLOW_HOST)) {
+            stackOverflowQuestionRepository.removeByLinkId(linkId);
+        }
+    }
+}

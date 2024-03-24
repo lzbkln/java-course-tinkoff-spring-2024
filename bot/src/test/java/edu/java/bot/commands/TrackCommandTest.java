@@ -61,7 +61,7 @@ public class TrackCommandTest {
     @Test
     @DisplayName("Test that /track with valid link returned valid message")
     public void testThatTrackCommandWithValidLinkReturnedValidMessage() throws URISyntaxException {
-        Mockito.doReturn("/track https://github.com").when(message).text();
+        Mockito.doReturn("/track https://github.com/lzbkln/java-course-tinkoff-spring-2024").when(message).text();
         Mockito.doReturn(Mono.just(ResponseEntity.ok().build()))
             .when(scrapperLinksClient).addLink(Mockito.any(), Mockito.any());
 

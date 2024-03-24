@@ -15,7 +15,9 @@ public record ApplicationConfig(
     @NotNull
     GitHubUrl gitHubUrl,
     @NotNull
-    BotLink botLink
+    BotLink botLink,
+    @NotNull
+    AccessType databaseAccessType
 ) {
     public record BotLink(String link) {
     }

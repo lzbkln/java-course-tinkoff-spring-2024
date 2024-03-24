@@ -21,16 +21,16 @@ public class LinkController implements LinkApi {
 
     @PostMapping
     public void addLink(@RequestHeader("Tg-Chat-Id") Long id, @RequestBody AddLinkRequest addLinkRequest) {
-        linkService.saveLink(id, addLinkRequest);
+        linkService.saveLink(id, addLinkRequest.link());
     }
 
     @GetMapping
     public ListLinksResponse getAllLinks(@RequestHeader("Tg-Chat-Id") Long chatId) {
-        return linkService.getAllLinks(chatId);
+        return linkService.getAllLinksResponse(chatId);
     }
 
     @DeleteMapping
     public void deleteLink(@RequestHeader("Tg-Chat-Id") Long id, @RequestBody RemoveLinkRequest request) {
-        linkService.deleteLinkFromChat(id, request);
+        linkService.deleteLink(id, request.link());
     }
 }

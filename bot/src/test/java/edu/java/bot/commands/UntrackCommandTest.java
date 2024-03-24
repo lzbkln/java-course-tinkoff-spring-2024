@@ -60,7 +60,7 @@ public class UntrackCommandTest {
     @Test
     @DisplayName("Test that /untrack with valid link returned valid message")
     public void testThatTrackCommandWithValidLinkReturnedValidMessage() throws URISyntaxException {
-        Mockito.doReturn("/untrack https://github.com").when(message).text();
+        Mockito.doReturn("/untrack https://github.com/lzbkln/java-course-tinkoff-spring-2024").when(message).text();
         Mockito.doReturn(Mono.just(ResponseEntity.ok().build()))
             .when(scrapperLinksClient).deleteLink(Mockito.any(), Mockito.any());
 

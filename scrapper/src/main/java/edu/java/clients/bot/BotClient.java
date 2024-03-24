@@ -22,7 +22,9 @@ public class BotClient {
             .retrieve()
             .onStatus(
                 HttpStatus.BAD_REQUEST::equals,
-                response -> response.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
+                response -> response.bodyToMono(ApiErrorResponse.class)
+                    .map(ApiErrorResponseException::new)
+                    .flatMap(Mono::error)
             )
             .toEntity(Void.class);
     }

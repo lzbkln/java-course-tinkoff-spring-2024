@@ -11,23 +11,32 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.TestPropertySource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = {ScrapperApplication.class})
 public class BotClientTest {
     private static WireMockServer wireMockServer;
-    private static BotClient botClient;
+
+    @Autowired
+    BotClient botClient;
     private static final String BOT_ID = "/bot/update";
+
+    @DynamicPropertySource
+    public static void configureRegistry(DynamicPropertyRegistry registry) {
+        registry.add("app.bot-link.link", wireMockServer::baseUrl);
+    }
 
     @BeforeAll
     public static void setUp() {
         wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().dynamicPort());
         wireMockServer.start();
-        WireMock.configureFor("localhost", wireMockServer.port());
-        botClient = new BotClient("http://localhost:" + wireMockServer.port());
     }
 
     @AfterAll

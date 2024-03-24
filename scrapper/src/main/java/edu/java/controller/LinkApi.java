@@ -24,6 +24,9 @@ public interface LinkApi {
                                         schema = @Schema(implementation = ApiErrorResponse.class))),
         @ApiResponse(responseCode = "404", description = "Чат не существует",
                      content = @Content(mediaType = "application/json",
+                                        schema = @Schema(implementation = ApiErrorResponse.class))),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                     content = @Content(mediaType = "application/json",
                                         schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ListLinksResponse getAllLinks(Long chatId);
@@ -42,6 +45,9 @@ public interface LinkApi {
                                         schema = @Schema(implementation = ApiErrorResponse.class))),
         @ApiResponse(responseCode = "409", description = "Ссылка уже отслеживается",
                      content = @Content(mediaType = "application/json",
+                                        schema = @Schema(implementation = ApiErrorResponse.class))),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                     content = @Content(mediaType = "application/json",
                                         schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     void addLink(Long id, AddLinkRequest addLinkRequest);
@@ -59,6 +65,9 @@ public interface LinkApi {
                      content = @Content(mediaType = "application/json",
                                         schema = @Schema(implementation = ApiErrorResponse.class))),
         @ApiResponse(responseCode = "409", description = "Ссылка не отслеживалась",
+                     content = @Content(mediaType = "application/json",
+                                        schema = @Schema(implementation = ApiErrorResponse.class))),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error",
                      content = @Content(mediaType = "application/json",
                                         schema = @Schema(implementation = ApiErrorResponse.class)))
     })
