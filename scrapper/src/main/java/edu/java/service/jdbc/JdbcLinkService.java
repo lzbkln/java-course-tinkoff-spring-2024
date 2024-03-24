@@ -43,14 +43,13 @@ public class JdbcLinkService implements LinkService {
 
         if (linkRepository.findByUrlBool(url.toString())) {
             saveLinkage(tgChatId, linkRepository.findByUrl(url.toString()).getId());
-            return;
+        } else {
+            Link newLink = new Link(url.toString());
+            Long linkId = saveNewLink(newLink);
+
+            saveLinkage(tgChatId, linkId);
+            saveAdditionalData(linkId, url);
         }
-
-        Link newLink = new Link(url.toString());
-        Long linkId = saveNewLink(newLink);
-
-        saveLinkage(tgChatId, linkId);
-        saveAdditionalData(linkId, url);
     }
 
     @Override
