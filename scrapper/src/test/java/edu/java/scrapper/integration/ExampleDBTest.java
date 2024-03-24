@@ -1,4 +1,4 @@
-package edu.java.scrapper.repository.jdbc;
+package edu.java.scrapper.integration;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
