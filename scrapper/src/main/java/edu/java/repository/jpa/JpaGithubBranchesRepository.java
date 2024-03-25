@@ -20,8 +20,4 @@ public interface JpaGithubBranchesRepository extends JpaRepository<JpaGithubBran
     @Modifying
     @Query("update JpaGithubBranches g set g.branches = :githubBranches where g.linkId.id = :linkId")
     void updateData(@Param("linkId") Long linkId, @Param("githubBranches") Set<String> githubBranches);
-
-    @Modifying
-    @Query("delete from JpaGithubBranches s where s.linkId.id = :linkId")
-    void removeByLinkId(Long linkId);
 }

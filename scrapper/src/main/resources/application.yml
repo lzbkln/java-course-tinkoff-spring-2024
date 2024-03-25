@@ -22,6 +22,8 @@ spring:
     password: postgres
   liquibase:
     enabled: false
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 
 server:

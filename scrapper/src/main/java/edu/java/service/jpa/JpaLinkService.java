@@ -116,7 +116,7 @@ public class JpaLinkService implements LinkService {
             jpaGithubBranchesRepository.deleteByLinkId(linkId);
         }
         if (url.getHost().equals(STACK_OVERFLOW_HOST)) {
-            jpaStackOverflowQuestionRepository.deleteById(linkId);
+            jpaStackOverflowQuestionRepository.deleteByLinkId(linkId);
         }
     }
 }
