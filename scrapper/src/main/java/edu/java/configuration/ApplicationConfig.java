@@ -1,5 +1,6 @@
 package edu.java.configuration;
 
+import edu.java.configuration.access.AccessType;
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
 import org.springframework.boot.context.properties.ConfigurationProperties;

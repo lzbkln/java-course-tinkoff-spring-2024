@@ -53,6 +53,7 @@ public class LinkUpdaterScheduler {
                 })
                 .subscribe(
                     update -> {
+                        //TODO ошибка
                         System.out.println(update.toString());
                     },
                     error -> {
