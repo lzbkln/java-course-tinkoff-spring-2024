@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
 import java.util.Collection;
@@ -36,6 +37,12 @@ public class JpaLink implements CommonLink {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "linkId")
     private Collection<JpaLinkage> linkages = new HashSet<>();
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "linkId")
+    private JpaGithubBranches githubBranches = new JpaGithubBranches();
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "linkId")
+    private JpaStackOverflowQuestion stackOverflowQuestions = new JpaStackOverflowQuestion();
 
     public JpaLink(String url) {
         this.url = url;

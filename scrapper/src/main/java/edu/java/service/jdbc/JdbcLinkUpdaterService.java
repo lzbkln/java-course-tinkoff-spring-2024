@@ -55,13 +55,13 @@ public class JdbcLinkUpdaterService implements LinkUpdater {
     }
 
     @Override
-    public void updateGitBranches(Long linkId, Set<String> branches) {
-        githubBranchesRepository.updateData(new GithubBranches(linkId, branches));
+    public void updateGitBranches(CommonLink link, Set<String> branches) {
+        githubBranchesRepository.updateData(new GithubBranches(link.getId(), branches));
     }
 
     @Override
-    public void updateAnswerCount(Long linkId, int answerCount) {
-        stackOverflowQuestionRepository.updateData(new StackOverflowQuestion(linkId, answerCount));
+    public void updateAnswerCount(CommonLink link, int answerCount) {
+        stackOverflowQuestionRepository.updateData(new StackOverflowQuestion(link.getId(), answerCount));
     }
 
     @Override
@@ -82,7 +82,7 @@ public class JdbcLinkUpdaterService implements LinkUpdater {
                 Set<String> oldBranches = githubBranchesRepository.findByLinkId(link.getId()).getBranches();
                 tempBranches.removeAll(oldBranches);
                 if (!tempBranches.isEmpty()) {
-                    updateGitBranches(link.getId(), newBranches);
+                    updateGitBranches(link, newBranches);
                     return Mono.just("Добавление новыx веток по ссылке: %s. Добавлены: ".formatted(link.getUrl())
                         + String.join(", ", tempBranches));
                 }
@@ -101,7 +101,7 @@ public class JdbcLinkUpdaterService implements LinkUpdater {
                     int oldCountQuestions =
                         stackOverflowQuestionRepository.findByLinkId(link.getId()).getAnswerCount();
                     if (oldCountQuestions < question.answerCount()) {
-                        updateAnswerCount(link.getId(), question.answerCount());
+                        updateAnswerCount(link, question.answerCount());
                         return "Новый ответ на вопрос: %s".formatted(link.getUrl());
                     }
                 }

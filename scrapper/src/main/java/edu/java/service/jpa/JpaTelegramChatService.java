@@ -16,7 +16,7 @@ public class JpaTelegramChatService implements TelegramChatService {
         if (jpaTelegramChatRepository.existsById(tgChatId)) {
             throw new ReRegistrationException(tgChatId);
         }
-        jpaTelegramChatRepository.save(new JpaTelegramChat(tgChatId));
+        jpaTelegramChatRepository.saveAndFlush(new JpaTelegramChat(tgChatId));
     }
 
     @Override

@@ -23,12 +23,12 @@ public class JpaLinkage {
 
     @ManyToOne
     @MapsId("chatId")
-    @JoinColumn(name = "chat_id")
+    @JoinColumn(name = "chat_id", referencedColumnName = "id")
     private JpaTelegramChat chatId;
 
     @ManyToOne
     @MapsId("linkId")
-    @JoinColumn(name = "link_id")
+    @JoinColumn(name = "link_id", referencedColumnName = "id")
     private JpaLink linkId;
 
     public JpaLinkage(JpaTelegramChat chatId, JpaLink linkId) {

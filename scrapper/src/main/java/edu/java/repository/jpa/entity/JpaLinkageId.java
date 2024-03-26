@@ -8,11 +8,9 @@ import lombok.Data;
 @Embeddable
 @Data
 public class JpaLinkageId implements Serializable {
-
     @Column(name = "chat_id")
-    long chatId;
+    Long chatId;
 
     @Column(name = "link_id")
-    long linkId;
-
+    Long linkId;
 }

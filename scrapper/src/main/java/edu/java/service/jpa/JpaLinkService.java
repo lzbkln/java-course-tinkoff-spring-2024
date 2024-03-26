@@ -87,7 +87,7 @@ public class JpaLinkService implements LinkService {
     }
 
     private JpaLink saveNewLink(JpaLink link) {
-        jpaLinkRepository.save(link);
+        jpaLinkRepository.saveAndFlush(link);
         return jpaLinkRepository.findByUrl(link.getUrl()).get();
     }
 
@@ -113,10 +113,10 @@ public class JpaLinkService implements LinkService {
 
     private void removeAdditionalData(Long linkId, URI url) {
         if (url.getHost().equals(GITHUB_HOST)) {
-            jpaGithubBranchesRepository.deleteByLinkId(linkId);
+            jpaGithubBranchesRepository.deleteByLinkId(new JpaLink(linkId, null, null));
         }
         if (url.getHost().equals(STACK_OVERFLOW_HOST)) {
-            jpaStackOverflowQuestionRepository.deleteByLinkId(linkId);
+            jpaStackOverflowQuestionRepository.deleteByLinkId(new JpaLink(linkId, null, null));
         }
     }
 }

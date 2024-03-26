@@ -15,11 +15,9 @@ public interface LinkUpdater {
     @Transactional
     List<Long> findTgChatIds(Long linkId);
 
-    @Transactional
-    void updateGitBranches(Long linkId, Set<String> branches);
+    void updateGitBranches(CommonLink link, Set<String> branches);
 
-    @Transactional
-    void updateAnswerCount(Long linkId, int answerCount);
+    void updateAnswerCount(CommonLink link, int answerCount);
 
     @Transactional
     Mono<String> getUpdateForGithub(CommonLink link);
