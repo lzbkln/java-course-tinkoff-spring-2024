@@ -1,6 +1,7 @@
 package edu.java.repository;
 
 import edu.java.repository.entity.Link;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public interface LinkRepository {
@@ -16,5 +17,5 @@ public interface LinkRepository {
 
     void updateLink(Link link);
 
-    List<Link> findLinksToUpdate();
+    List<Link> findByLastUpdatedAtBefore(OffsetDateTime time);
 }

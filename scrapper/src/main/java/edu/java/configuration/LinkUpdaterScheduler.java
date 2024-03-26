@@ -4,6 +4,8 @@ import edu.java.clients.bot.BotClient;
 import edu.java.clients.sites.linkCheckers.UpdateChecker;
 import edu.java.dto.requests.LinkUpdateRequest;
 import edu.java.repository.entity.Link;
+import edu.java.repository.jpa.entity.CommonLink;
+import edu.java.repository.jpa.entity.JpaLink;
 import edu.java.service.LinkUpdater;
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -25,14 +27,14 @@ public class LinkUpdaterScheduler {
     @Scheduled(fixedDelayString = "PT${app.scheduler.interval}")
     @ConditionalOnProperty(value = "app.scheduler.enable", havingValue = "true")
     public void update() {
-        List<Link> linksToUpdate = linkUpdater.findLinksToUpdate();
+        List<CommonLink> linksToUpdate = linkUpdater.findLinksToUpdate();
 
-        for (Link link : linksToUpdate) {
+        for (CommonLink link : linksToUpdate) {
             sendUpdate(link);
         }
     }
 
-    private void sendUpdate(Link link) {
+    private void sendUpdate(CommonLink link) {
         Optional<UpdateChecker> updateChecker = updateCheckers.stream()
             .filter(checker -> checker.isMatched(URI.create(link.getUrl())))
             .findFirst();
@@ -51,12 +53,19 @@ public class LinkUpdaterScheduler {
                 })
                 .subscribe(
                     update -> {
+                        System.out.println(update.toString());
                     },
                     error -> {
+                        System.out.println(error.getCause());
                     },
                     () -> {
-                        link.setLastUpdatedAt(OffsetDateTime.now());
-                        linkUpdater.update(link);
+                        if (link instanceof Link) {
+                            Link updatedLink = new Link(link.getId(), link.getUrl(), OffsetDateTime.now());
+                            linkUpdater.update(updatedLink);
+                        } else if (link instanceof JpaLink) {
+                            JpaLink updatedLink = new JpaLink(link.getId(), link.getUrl(), OffsetDateTime.now());
+                            linkUpdater.update(updatedLink);
+                        }
                     }
                 );
         });

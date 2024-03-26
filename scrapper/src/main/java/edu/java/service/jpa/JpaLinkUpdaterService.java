@@ -1,19 +1,20 @@
-package edu.java.service.jdbc;
+package edu.java.service.jpa;
 
 import edu.java.clients.sites.GitHubClient;
 import edu.java.clients.sites.StackOverflowClient;
 import edu.java.clients.sites.util.Utils;
 import edu.java.dto.responses.GithubBranchResponseDTO;
 import edu.java.dto.responses.StackOverflowResponseDTO;
-import edu.java.repository.GithubBranchesRepository;
-import edu.java.repository.LinkRepository;
-import edu.java.repository.LinkageRepository;
-import edu.java.repository.StackOverflowQuestionRepository;
-import edu.java.repository.entity.GithubBranches;
-import edu.java.repository.entity.Link;
-import edu.java.repository.entity.Linkage;
-import edu.java.repository.entity.StackOverflowQuestion;
+import edu.java.repository.jpa.JpaGithubBranchesRepository;
+import edu.java.repository.jpa.JpaLinkRepository;
+import edu.java.repository.jpa.JpaLinkageRepository;
+import edu.java.repository.jpa.JpaStackOverflowQuestionRepository;
 import edu.java.repository.jpa.entity.CommonLink;
+import edu.java.repository.jpa.entity.JpaGithubBranches;
+import edu.java.repository.jpa.entity.JpaLink;
+import edu.java.repository.jpa.entity.JpaLinkage;
+import edu.java.repository.jpa.entity.JpaStackOverflowQuestion;
+import edu.java.repository.jpa.entity.JpaTelegramChat;
 import edu.java.service.LinkUpdater;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
@@ -26,42 +27,51 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 @RequiredArgsConstructor
-public class JdbcLinkUpdaterService implements LinkUpdater {
-    private final LinkRepository linkRepository;
-    private final LinkageRepository linkageTableRepository;
-    private final GithubBranchesRepository githubBranchesRepository;
-    private final StackOverflowQuestionRepository stackOverflowQuestionRepository;
+public class JpaLinkUpdaterService implements LinkUpdater {
+    private final JpaLinkRepository jpaLinkRepository;
+    private final JpaLinkageRepository jpaLinkageRepository;
+    private final JpaGithubBranchesRepository jpaGithubBranchesRepository;
+    private final JpaStackOverflowQuestionRepository jpaStackOverflowQuestionRepository;
     private final Utils utils;
     private final GitHubClient gitHubClient;
     private final StackOverflowClient stackOverflowClient;
 
     @Override
     public void update(CommonLink link) {
-        linkRepository.updateLink(new Link(link.getId(), link.getUrl(), link.getLastUpdatedAt()));
+        jpaLinkRepository.saveAndFlush(new JpaLink(link.getId(), link.getUrl(), link.getLastUpdatedAt()));
     }
 
     @Override
-    public List<Link> findLinksToUpdate() {
-        return linkRepository.findByLastUpdatedAtBefore(OffsetDateTime.now().minusHours(1));
+    public List<JpaLink> findLinksToUpdate() {
+        return jpaLinkRepository.findByLastUpdatedAtBefore(OffsetDateTime.now().minusHours(1));
     }
 
     @Override
     public List<Long> findTgChatIds(Long linkId) {
-        return linkageTableRepository
+        return jpaLinkageRepository
             .findByLinkId(linkId)
             .stream()
-            .map(Linkage::getChatId)
+            .map(JpaLinkage::getChatId)
+            .map(JpaTelegramChat::getId)
             .collect(Collectors.toList());
     }
 
     @Override
     public void updateGitBranches(CommonLink link, Set<String> branches) {
-        githubBranchesRepository.updateData(new GithubBranches(link.getId(), branches));
+        jpaGithubBranchesRepository.saveAndFlush(new JpaGithubBranches(new JpaLink(
+            link.getId(),
+            link.getUrl(),
+            link.getLastUpdatedAt()
+        ), branches));
     }
 
     @Override
     public void updateAnswerCount(CommonLink link, int answerCount) {
-        stackOverflowQuestionRepository.updateData(new StackOverflowQuestion(link.getId(), answerCount));
+        jpaStackOverflowQuestionRepository.saveAndFlush(new JpaStackOverflowQuestion(new JpaLink(
+            link.getId(),
+            link.getUrl(),
+            link.getLastUpdatedAt()
+        ), answerCount));
     }
 
     @Override
@@ -72,14 +82,14 @@ public class JdbcLinkUpdaterService implements LinkUpdater {
             .flatMap(response -> getBranchesUpdate(link, utils.getBranches(link.getUrl())));
     }
 
-    private Mono<String> getBranchesUpdate(CommonLink link, Mono<GithubBranchResponseDTO[]> branchesMono) {
+    public Mono<String> getBranchesUpdate(CommonLink link, Mono<GithubBranchResponseDTO[]> branchesMono) {
         return branchesMono
             .flatMap(branchesArray -> {
                 Set<String> newBranches = Arrays.stream(branchesArray)
                     .map(GithubBranchResponseDTO::name)
                     .collect(Collectors.toSet());
                 Set<String> tempBranches = new HashSet<>(newBranches);
-                Set<String> oldBranches = githubBranchesRepository.findByLinkId(link.getId()).getBranches();
+                Set<String> oldBranches = jpaGithubBranchesRepository.findByLinkId((JpaLink) link).getBranches();
                 tempBranches.removeAll(oldBranches);
                 if (!tempBranches.isEmpty()) {
                     updateGitBranches(link, newBranches);
@@ -99,7 +109,7 @@ public class JdbcLinkUpdaterService implements LinkUpdater {
                 StackOverflowResponseDTO.Question question = response.items().getFirst();
                 if (question.lastActivityDate().isAfter(link.getLastUpdatedAt())) {
                     int oldCountQuestions =
-                        stackOverflowQuestionRepository.findByLinkId(link.getId()).getAnswerCount();
+                        jpaStackOverflowQuestionRepository.findByLinkId((JpaLink) link).getAnswerCount();
                     if (oldCountQuestions < question.answerCount()) {
                         updateAnswerCount(link, question.answerCount());
                         return "Новый ответ на вопрос: %s".formatted(link.getUrl());

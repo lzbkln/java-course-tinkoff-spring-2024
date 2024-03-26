@@ -57,11 +57,10 @@ public class JooqLinkRepository implements LinkRepository {
     }
 
     @Override
-    @SuppressWarnings("MagicNumber")
-    public List<Link> findLinksToUpdate() {
+    public List<Link> findByLastUpdatedAtBefore(OffsetDateTime time) {
         return dslContext.select(LINKS.fields())
             .from(LINKS)
-            .where(LINKS.LAST_UPDATED_AT.lt(OffsetDateTime.now().minusHours(1)))
+            .where(LINKS.LAST_UPDATED_AT.lt(time))
             .fetchInto(Link.class);
     }
 }

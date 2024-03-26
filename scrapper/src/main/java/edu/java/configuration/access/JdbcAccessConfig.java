@@ -1,5 +1,7 @@
-package edu.java.configuration;
+package edu.java.configuration.access;
 
+import edu.java.clients.sites.GitHubClient;
+import edu.java.clients.sites.StackOverflowClient;
 import edu.java.clients.sites.util.Utils;
 import edu.java.repository.GithubBranchesRepository;
 import edu.java.repository.LinkRepository;
@@ -15,8 +17,8 @@ import edu.java.service.LinkService;
 import edu.java.service.LinkUpdater;
 import edu.java.service.TelegramChatService;
 import edu.java.service.jdbc.JdbcLinkService;
-import edu.java.service.jdbc.JdbcLinkUpdaterService;
 import edu.java.service.jdbc.JdbcTelegramChatService;
+import edu.java.service.jooq.JooqLinkUpdaterService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -51,8 +53,24 @@ public class JdbcAccessConfig {
     }
 
     @Bean
-    public LinkUpdater linkUpdater(LinkRepository linkRepository, LinkageRepository linkageRepository) {
-        return new JdbcLinkUpdaterService(linkRepository, linkageRepository);
+    public LinkUpdater linkUpdater(
+        LinkRepository linkRepository,
+        LinkageRepository linkageRepository,
+        GithubBranchesRepository githubBranchesRepository,
+        StackOverflowQuestionRepository stackOverflowQuestionRepository,
+        Utils utils,
+        GitHubClient gitHubClient,
+        StackOverflowClient stackOverflowClient
+    ) {
+        return new JooqLinkUpdaterService(
+            linkRepository,
+            linkageRepository,
+            githubBranchesRepository,
+            stackOverflowQuestionRepository,
+            utils,
+            gitHubClient,
+            stackOverflowClient
+        );
     }
 
     @Bean
