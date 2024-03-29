@@ -17,12 +17,12 @@ import edu.java.repository.jpa.entity.JpaStackOverflowQuestion;
 import edu.java.repository.jpa.entity.JpaTelegramChat;
 import edu.java.service.LinkUpdater;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -38,7 +38,7 @@ public class JpaLinkUpdaterService implements LinkUpdater {
 
     @Override
     public void update(CommonLink link) {
-        jpaLinkRepository.saveAndFlush(new JpaLink(link.getId(), link.getUrl(), link.getLastUpdatedAt()));
+        jpaLinkRepository.saveAndFlush((JpaLink) link);
     }
 
     @Override
@@ -57,21 +57,21 @@ public class JpaLinkUpdaterService implements LinkUpdater {
     }
 
     @Override
-    public void updateGitBranches(CommonLink link, Set<String> branches) {
-        jpaGithubBranchesRepository.saveAndFlush(new JpaGithubBranches(new JpaLink(
-            link.getId(),
-            link.getUrl(),
-            link.getLastUpdatedAt()
-        ), branches));
+    @Transactional
+    public void updateGitBranches(CommonLink link, List<String> branches) {
+        JpaGithubBranches jpaGithubBranches = jpaGithubBranchesRepository.findByLinkId((JpaLink) link).orElseThrow();
+
+        jpaGithubBranches.setBranches(branches);
+        jpaGithubBranchesRepository.saveAndFlush(jpaGithubBranches);
     }
 
     @Override
     public void updateAnswerCount(CommonLink link, int answerCount) {
-        jpaStackOverflowQuestionRepository.saveAndFlush(new JpaStackOverflowQuestion(new JpaLink(
-            link.getId(),
-            link.getUrl(),
-            link.getLastUpdatedAt()
-        ), answerCount));
+        jpaStackOverflowQuestionRepository.saveAndFlush(new JpaStackOverflowQuestion(
+            jpaStackOverflowQuestionRepository.findByLinkId((JpaLink) link).orElseThrow().getId(),
+            new JpaLink(link.getId()),
+            answerCount
+        ));
     }
 
     @Override
@@ -85,11 +85,12 @@ public class JpaLinkUpdaterService implements LinkUpdater {
     public Mono<String> getBranchesUpdate(CommonLink link, Mono<GithubBranchResponseDTO[]> branchesMono) {
         return branchesMono
             .flatMap(branchesArray -> {
-                Set<String> newBranches = Arrays.stream(branchesArray)
+                List<String> newBranches = Arrays.stream(branchesArray)
                     .map(GithubBranchResponseDTO::name)
-                    .collect(Collectors.toSet());
-                Set<String> tempBranches = new HashSet<>(newBranches);
-                Set<String> oldBranches = jpaGithubBranchesRepository.findByLinkId((JpaLink) link).getBranches();
+                    .collect(Collectors.toList());
+                List<String> tempBranches = new ArrayList<>(newBranches);
+                List<String> oldBranches =
+                    jpaGithubBranchesRepository.findByLinkId((JpaLink) link).orElseThrow().getBranches();
                 tempBranches.removeAll(oldBranches);
                 if (!tempBranches.isEmpty()) {
                     updateGitBranches(link, newBranches);
@@ -109,7 +110,7 @@ public class JpaLinkUpdaterService implements LinkUpdater {
                 StackOverflowResponseDTO.Question question = response.items().getFirst();
                 if (question.lastActivityDate().isAfter(link.getLastUpdatedAt())) {
                     int oldCountQuestions =
-                        jpaStackOverflowQuestionRepository.findByLinkId((JpaLink) link).getAnswerCount();
+                        jpaStackOverflowQuestionRepository.findByLinkId((JpaLink) link).orElseThrow().getAnswerCount();
                     if (oldCountQuestions < question.answerCount()) {
                         updateAnswerCount(link, question.answerCount());
                         return "Новый ответ на вопрос: %s".formatted(link.getUrl());

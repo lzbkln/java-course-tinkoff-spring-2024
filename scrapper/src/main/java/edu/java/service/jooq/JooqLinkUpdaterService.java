@@ -16,10 +16,9 @@ import edu.java.repository.entity.StackOverflowQuestion;
 import edu.java.repository.jpa.entity.CommonLink;
 import edu.java.service.LinkUpdater;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -56,7 +55,7 @@ public class JooqLinkUpdaterService implements LinkUpdater {
     }
 
     @Override
-    public void updateGitBranches(CommonLink link, Set<String> branches) {
+    public void updateGitBranches(CommonLink link, List<String> branches) {
         githubBranchesRepository.updateData(new GithubBranches(link.getId(), branches));
     }
 
@@ -76,11 +75,11 @@ public class JooqLinkUpdaterService implements LinkUpdater {
     private Mono<String> getBranchesUpdate(CommonLink link, Mono<GithubBranchResponseDTO[]> branchesMono) {
         return branchesMono
             .flatMap(branchesArray -> {
-                Set<String> newBranches = Arrays.stream(branchesArray)
+                List<String> newBranches = Arrays.stream(branchesArray)
                     .map(GithubBranchResponseDTO::name)
-                    .collect(Collectors.toSet());
-                Set<String> tempBranches = new HashSet<>(newBranches);
-                Set<String> oldBranches = githubBranchesRepository.findByLinkId(link.getId()).getBranches();
+                    .collect(Collectors.toList());
+                List<String> tempBranches = new ArrayList<>(newBranches);
+                List<String> oldBranches = githubBranchesRepository.findByLinkId(link.getId()).getBranches();
                 tempBranches.removeAll(oldBranches);
                 if (!tempBranches.isEmpty()) {
                     updateGitBranches(link, newBranches);

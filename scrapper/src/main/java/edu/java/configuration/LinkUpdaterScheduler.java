@@ -53,10 +53,8 @@ public class LinkUpdaterScheduler {
                 })
                 .subscribe(
                     update -> {
-                        System.out.println(update.toString());
                     },
                     error -> {
-                        System.out.println(error.getCause());
                     },
                     () -> {
                         if (link instanceof Link) {

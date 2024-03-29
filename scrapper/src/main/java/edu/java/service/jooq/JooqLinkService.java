@@ -20,7 +20,6 @@ import edu.java.service.exceptions.NonRegisterChatException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -103,9 +102,9 @@ public class JooqLinkService implements LinkService {
         if (url.getHost().equals(GITHUB_HOST)) {
             clientUtil.getBranches(url.toString())
                 .map(response -> {
-                    Set<String> branches = Arrays.stream(response)
+                    List<String> branches = Arrays.stream(response)
                         .map(GithubBranchResponseDTO::name)
-                        .collect(Collectors.toSet());
+                        .collect(Collectors.toList());
                     return new GithubBranches(linkId, branches);
                 })
                 .doOnSuccess(githubBranchesRepository::save)

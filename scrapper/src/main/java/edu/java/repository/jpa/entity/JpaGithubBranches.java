@@ -9,7 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.util.Set;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,9 +34,9 @@ public class JpaGithubBranches {
 
     @Type(ListArrayType.class)
     @Column(name = "branches", columnDefinition = "VARCHAR(255)[]")
-    private Set<String> branches;
+    private List<String> branches;
 
-    public JpaGithubBranches(JpaLink linkId, Set<String> branches) {
+    public JpaGithubBranches(JpaLink linkId, List<String> branches) {
         this.linkId = linkId;
         this.branches = branches;
     }

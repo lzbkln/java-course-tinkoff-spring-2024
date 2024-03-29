@@ -2,7 +2,6 @@ package edu.java.service;
 
 import edu.java.repository.jpa.entity.CommonLink;
 import java.util.List;
-import java.util.Set;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
@@ -15,7 +14,7 @@ public interface LinkUpdater {
     @Transactional
     List<Long> findTgChatIds(Long linkId);
 
-    void updateGitBranches(CommonLink link, Set<String> branches);
+    void updateGitBranches(CommonLink link, List<String> branches);
 
     void updateAnswerCount(CommonLink link, int answerCount);
 

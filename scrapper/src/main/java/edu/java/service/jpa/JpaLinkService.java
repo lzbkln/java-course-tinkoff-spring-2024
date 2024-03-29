@@ -20,7 +20,6 @@ import edu.java.service.exceptions.NonRegisterChatException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
@@ -52,6 +51,7 @@ public class JpaLinkService implements LinkService {
 
     @Override
     public void deleteLink(Long tgChatId, URI url) {
+        //не удалилось из таблицы ссылок стэк
         checkRegisterChat(tgChatId);
 
         JpaLink link = jpaLinkRepository.findByUrl(url.toString()).orElseThrow(() -> new NoSuchLinkException(url));
@@ -59,7 +59,7 @@ public class JpaLinkService implements LinkService {
         jpaLinkageRepository.deleteByLinkIdAndChatId(linkId, tgChatId);
         if (jpaLinkageRepository.countByLinkId(linkId) == 0) {
             removeAdditionalData(linkId, url);
-            jpaLinkRepository.removeById(linkId);
+            jpaLinkRepository.deleteById(linkId);
         }
 
     }
@@ -95,16 +95,16 @@ public class JpaLinkService implements LinkService {
         if (url.getHost().equals(GITHUB_HOST)) {
             clientUtil.getBranches(url.toString())
                 .map(response -> {
-                    Set<String> branches = Arrays.stream(response)
+                    List<String> branches = Arrays.stream(response)
                         .map(GithubBranchResponseDTO::name)
-                        .collect(Collectors.toSet());
+                        .collect(Collectors.toList());
                     return new JpaGithubBranches(link, branches);
                 })
-                .doOnSuccess(jpaGithubBranchesRepository::save)
+                .doOnSuccess(jpaGithubBranchesRepository::saveAndFlush)
                 .subscribe();
         }
         if (url.getHost().equals(STACK_OVERFLOW_HOST)) {
-            jpaStackOverflowQuestionRepository.save(new JpaStackOverflowQuestion(
+            jpaStackOverflowQuestionRepository.saveAndFlush(new JpaStackOverflowQuestion(
                 link,
                 clientUtil.getAnswerCount(url.toString())
             ));
@@ -113,10 +113,10 @@ public class JpaLinkService implements LinkService {
 
     private void removeAdditionalData(Long linkId, URI url) {
         if (url.getHost().equals(GITHUB_HOST)) {
-            jpaGithubBranchesRepository.deleteByLinkId(new JpaLink(linkId, null, null));
+            jpaGithubBranchesRepository.deleteByLinkId(new JpaLink(linkId));
         }
         if (url.getHost().equals(STACK_OVERFLOW_HOST)) {
-            jpaStackOverflowQuestionRepository.deleteByLinkId(new JpaLink(linkId, null, null));
+            jpaStackOverflowQuestionRepository.deleteByLinkId(new JpaLink(linkId));
         }
     }
 }
