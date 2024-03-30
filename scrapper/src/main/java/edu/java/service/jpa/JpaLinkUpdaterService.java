@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -57,7 +56,6 @@ public class JpaLinkUpdaterService implements LinkUpdater {
     }
 
     @Override
-    @Transactional
     public void updateGitBranches(CommonLink link, List<String> branches) {
         JpaGithubBranches jpaGithubBranches = jpaGithubBranchesRepository.findByLinkId((JpaLink) link).orElseThrow();
 

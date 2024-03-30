@@ -20,6 +20,7 @@ import edu.java.service.exceptions.NonRegisterChatException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +64,7 @@ public class JdbcLinkService implements LinkService {
                 removeAdditionalData(linkId, url);
                 linkRepository.removeById(linkId);
             }
-        } catch (EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException | NoSuchElementException exception) {
             throw new NoSuchLinkException(url);
         }
     }
@@ -93,7 +94,7 @@ public class JdbcLinkService implements LinkService {
 
     private void checkAlreadyTrackedLinks(Long tgChatId, URI url) {
         Optional<Link> link = linkRepository.findByUrl(url.toString());
-        if (link.isPresent()) {
+        if (linkRepository.findByUrl(url.toString()).isPresent()) {
             if (linkageTableRepository.findByLinkIdAndChatId(link.get().getId(), tgChatId)) {
                 throw new AlreadyTrackedLinkException(url);
             }

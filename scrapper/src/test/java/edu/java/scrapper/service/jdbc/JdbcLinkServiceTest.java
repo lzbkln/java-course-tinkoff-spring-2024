@@ -12,6 +12,7 @@ import edu.java.repository.jdbc.rowMappers.LinkageRowMapper;
 import edu.java.repository.jdbc.rowMappers.StackOverflowQuestionRowMapper;
 import edu.java.scrapper.integration.IntegrationTest;
 import edu.java.service.LinkService;
+import edu.java.service.exceptions.AlreadyTrackedLinkException;
 import edu.java.service.exceptions.NoSuchLinkException;
 import edu.java.service.exceptions.NonRegisterChatException;
 import java.net.URI;
@@ -45,6 +46,7 @@ public class JdbcLinkServiceTest extends IntegrationTest {
     @Test
     @DisplayName("Test that save link works correctly")
     void testThatSaveLinkWorksCorrectly() {
+        //TODO fix
         Long tgChatId = 1L;
         URI gitUrl = URI.create("https://github.com/lzbkln/java-course-tinkoff-spring-2024");
         URI stackUrl =
@@ -142,5 +144,32 @@ public class JdbcLinkServiceTest extends IntegrationTest {
         Long tgChatId = 1L;
 
         assertThrows(NonRegisterChatException.class, () -> linkService.getAllLinksResponse(tgChatId));
+    }
+
+    @Test
+    @DisplayName("Test that delete link throws NonRegisterChatException")
+    void testThatDeleteLinkThrowsNonRegisterChatException() {
+        Long tgChatId = 1L;
+
+        assertThrows(NonRegisterChatException.class, () -> linkService.deleteLink(tgChatId, URI.create("")));
+    }
+
+    @Test
+    @DisplayName("Test that save link throws NonRegisterChatException")
+    void testThatSaveLinkThrowsNonRegisterChatException() {
+        Long tgChatId = 1L;
+
+        assertThrows(NonRegisterChatException.class, () -> linkService.saveLink(tgChatId, URI.create("")));
+    }
+
+    @Test
+    @DisplayName("Test that save link throws AlreadyTrackedLinkException")
+    void testThatSaveLinkThrowsAlreadyTrackedLinkException() {
+        Long tgChatId = 1L;
+        URI uri = URI.create("https://github.com");
+        jdbcTemplate.update("INSERT INTO chats (id) VALUES (?)", tgChatId);
+        linkService.saveLink(tgChatId, uri);
+
+        assertThrows(AlreadyTrackedLinkException.class, () -> linkService.saveLink(tgChatId, uri));
     }
 }

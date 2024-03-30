@@ -4,6 +4,7 @@ import edu.java.repository.LinkageRepository;
 import edu.java.repository.entity.Linkage;
 import edu.java.repository.jdbc.rowMappers.LinkageRowMapper;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -68,10 +69,11 @@ public class JdbcLinkageRepository implements LinkageRepository {
 
     @Override
     public boolean findByLinkIdAndChatId(Long linkId, Long chatId) {
-        int count = jdbcClient.sql(FIND_BY_LINK_ID_AND_CHAT_ID_SQL)
+        Optional<Linkage> linkage = jdbcClient.sql(FIND_BY_LINK_ID_AND_CHAT_ID_SQL)
             .param(CHAT_ID, chatId)
             .param(LINK_ID, linkId)
-            .query(Integer.class).single();
-        return count > 0;
+            .query(ROW_MAPPER)
+            .optional();
+        return linkage.isPresent();
     }
 }

@@ -46,17 +46,16 @@ public class JpaLinkService implements LinkService {
             saveLinkage(tgChatId, jpaLinkRepository.findByUrl(url.toString()).get());
         } else {
             JpaLink newLink = new JpaLink(url.toString());
-            JpaLink linkId = saveNewLink(newLink);
+            JpaLink link = saveNewLink(newLink);
 
-            saveLinkage(tgChatId, linkId);
-            saveAdditionalData(linkId, url);
+            saveLinkage(tgChatId, link);
+            saveAdditionalData(link, url);
         }
     }
 
     @Override
     @Transactional
     public void deleteLink(Long tgChatId, URI url) {
-        //не удалилось из таблицы ссылок стэк
         checkRegisterChat(tgChatId);
 
         JpaLink link = jpaLinkRepository.findByUrl(url.toString()).orElseThrow(() -> new NoSuchLinkException(url));

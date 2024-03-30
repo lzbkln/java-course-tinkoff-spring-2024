@@ -14,8 +14,10 @@ public interface LinkUpdater {
     @Transactional
     List<Long> findTgChatIds(Long linkId);
 
+    @Transactional
     void updateGitBranches(CommonLink link, List<String> branches);
 
+    @Transactional
     void updateAnswerCount(CommonLink link, int answerCount);
 
     @Transactional

@@ -1,33 +1,45 @@
 package edu.java.scrapper.service.jooq;
 
 import edu.java.ScrapperApplication;
+import edu.java.repository.GithubBranchesRepository;
+import edu.java.repository.LinkRepository;
+import edu.java.repository.LinkageRepository;
+import edu.java.repository.StackOverflowQuestionRepository;
+import edu.java.repository.TelegramChatRepository;
+import edu.java.repository.entity.GithubBranches;
 import edu.java.repository.entity.Link;
+import edu.java.repository.entity.StackOverflowQuestion;
 import edu.java.scrapper.integration.IntegrationTest;
 import edu.java.service.LinkUpdater;
+import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.Arrays;
+import java.util.List;
 import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import java.net.URI;
-import java.time.OffsetDateTime;
-import java.util.List;
 import static edu.java.domain.jooq.tables.Chats.CHATS;
+import static edu.java.domain.jooq.tables.GithubBranches.GITHUB_BRANCHES;
 import static edu.java.domain.jooq.tables.Linkage.LINKAGE;
 import static edu.java.domain.jooq.tables.Links.LINKS;
+import static edu.java.domain.jooq.tables.StackoverflowQuestion.STACKOVERFLOW_QUESTION;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.jooq.impl.DSL.field;
-import static org.jooq.impl.DSL.table;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = {ScrapperApplication.class})
 public class JooqLinkUpdaterServiceTest extends IntegrationTest {
     @Autowired
     private LinkUpdater linkUpdaterService;
-
+    @Autowired
+    private StackOverflowQuestionRepository stackOverflowQuestionRepository;
+    @Autowired
+    private GithubBranchesRepository githubBranchesRepository;
+    @Autowired
+    private LinkUpdater linkUpdater;
     @Autowired
     private DSLContext dslContext;
 
@@ -104,5 +116,45 @@ public class JooqLinkUpdaterServiceTest extends IntegrationTest {
         List<Long> tgChatIds = linkUpdaterService.findTgChatIds(linkId);
 
         assertThat(tgChatIds).containsExactlyInAnyOrder(100L, 200L);
+    }
+
+    @Test
+    @DisplayName("Test that updateGitBranches method correctly updates branches")
+    void testThatUpdateGitBranchesMethodCorrectlyUpdatesBranches() {
+        String uri = "https://github.com/lzbkln/java-course-tinkoff-spring-2024";
+        dslContext.insertInto(LINKS, LINKS.URL, LINKS.LAST_UPDATED_AT)
+            .values(uri, OffsetDateTime.now())
+            .execute();
+        List<String> oldBranches = List.of("oldBranch1", "oldBranch2");
+        dslContext.insertInto(GITHUB_BRANCHES, GITHUB_BRANCHES.LINK_ID, GITHUB_BRANCHES.BRANCHES)
+            .values(1L, oldBranches.toArray(new String[0]))
+            .execute();
+
+        List<String> newBranches = Arrays.asList("branch1", "branch2", "branch3");
+        linkUpdater.updateGitBranches(new Link(1L, uri, OffsetDateTime.now()), newBranches);
+
+        GithubBranches updatedBranches = githubBranchesRepository.findByLinkId(1L);
+        assertEquals(newBranches, updatedBranches.getBranches());
+    }
+
+    @Test
+    @DisplayName("Test that updateAnswerCount method correctly updates answer count")
+    void testThatUpdateAnswerCountMethodCorrectlyUpdatesAnswerCount() {
+        String uri = "https://stackoverflow.com/questions/59715622/docker-compose-and-create-db-in-postgres-on-init";
+        dslContext.insertInto(LINKS, LINKS.URL, LINKS.LAST_UPDATED_AT)
+            .values(uri, OffsetDateTime.now())
+            .execute();
+        dslContext.insertInto(
+                STACKOVERFLOW_QUESTION,
+                STACKOVERFLOW_QUESTION.LINK_ID,
+                STACKOVERFLOW_QUESTION.ANSWER_COUNT
+            )
+            .values(1L, 1L)
+            .execute();
+
+        linkUpdater.updateAnswerCount(new Link(1L, uri, OffsetDateTime.now()), 3);
+
+        StackOverflowQuestion updatedQuestion = stackOverflowQuestionRepository.findByLinkId(1L);
+        assertEquals(3, updatedQuestion.getAnswerCount());
     }
 }
