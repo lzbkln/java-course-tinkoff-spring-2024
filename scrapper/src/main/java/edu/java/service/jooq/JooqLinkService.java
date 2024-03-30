@@ -21,6 +21,7 @@ import edu.java.service.exceptions.NonRegisterChatException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -65,7 +66,7 @@ public class JooqLinkService implements LinkService {
                 removeAdditionalData(linkId, url);
                 linkRepository.removeById(linkId);
             }
-        } catch (EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException | NoSuchElementException e) {
             throw new NoSuchLinkException(url);
         }
     }
