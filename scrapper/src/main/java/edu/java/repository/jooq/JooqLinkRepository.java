@@ -4,6 +4,7 @@ import edu.java.repository.LinkRepository;
 import edu.java.repository.entity.Link;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import static edu.java.domain.jooq.tables.Links.LINKS;
@@ -28,11 +29,12 @@ public class JooqLinkRepository implements LinkRepository {
     }
 
     @Override
-    public Link findByUrl(String url) {
-        return dslContext.select(LINKS.fields())
+    public Optional<Link> findByUrl(String url) {
+        Link link = dslContext.select(LINKS.fields())
             .from(LINKS)
             .where(LINKS.URL.eq(url))
             .fetchOneInto(Link.class);
+        return Optional.ofNullable(link);
     }
 
     @Override

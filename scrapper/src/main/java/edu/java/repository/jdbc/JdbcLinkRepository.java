@@ -5,6 +5,7 @@ import edu.java.repository.entity.Link;
 import edu.java.repository.jdbc.rowMappers.LinkRowMapper;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -44,11 +45,11 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Override
-    public Link findByUrl(String url) {
+    public Optional<Link> findByUrl(String url) {
         return jdbcClient.sql(FIND_BY_URL_SQL)
             .param(URL, url)
             .query(ROW_MAPPER)
-            .single();
+            .optional();
     }
 
     @Override

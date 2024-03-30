@@ -21,6 +21,7 @@ import edu.java.service.exceptions.NonRegisterChatException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -42,7 +43,7 @@ public class JooqLinkService implements LinkService {
         checkAlreadyTrackedLinks(tgChatId, url);
 
         if (linkRepository.findByUrlBool(url.toString())) {
-            saveLinkage(tgChatId, linkRepository.findByUrl(url.toString()).getId());
+            saveLinkage(tgChatId, linkRepository.findByUrl(url.toString()).get().getId());
         } else {
             Link newLink = new Link(url.toString());
             Long linkId = saveNewLink(newLink);
@@ -57,8 +58,8 @@ public class JooqLinkService implements LinkService {
     public void deleteLink(Long tgChatId, URI url) {
         checkRegisterChat(tgChatId);
         try {
-            Link link = linkRepository.findByUrl(url.toString());
-            Long linkId = link.getId();
+            Optional<Link> link = linkRepository.findByUrl(url.toString());
+            Long linkId = link.get().getId();
             linkageTableRepository.removeByChatIdAndLinkId(tgChatId, linkId);
             if (linkageTableRepository.countByLinkId(linkId) == 0) {
                 removeAdditionalData(linkId, url);
@@ -92,9 +93,9 @@ public class JooqLinkService implements LinkService {
     }
 
     private void checkAlreadyTrackedLinks(Long tgChatId, URI url) {
-        Link link = linkRepository.findByUrl(url.toString());
-        if (link != null) {
-            if (linkageTableRepository.findByLinkIdAndChatId(link.getId(), tgChatId)) {
+        Optional<Link> link = linkRepository.findByUrl(url.toString());
+        if (link.isPresent()) {
+            if (linkageTableRepository.findByLinkIdAndChatId(link.get().getId(), tgChatId)) {
                 throw new AlreadyTrackedLinkException(url);
             }
         }
@@ -106,7 +107,7 @@ public class JooqLinkService implements LinkService {
 
     private Long saveNewLink(Link link) {
         linkRepository.save(link);
-        return linkRepository.findByUrl(link.getUrl()).getId();
+        return linkRepository.findByUrl(link.getUrl()).get().getId();
     }
 
     private void saveAdditionalData(Long linkId, URI url) {
