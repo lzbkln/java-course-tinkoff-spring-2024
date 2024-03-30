@@ -4,8 +4,8 @@ import edu.java.repository.jpa.entity.CommonLink;
 import java.net.URI;
 import reactor.core.publisher.Mono;
 
-public abstract class UpdateChecker {
-    public abstract boolean isMatched(URI link);
+public interface UpdateChecker {
+    boolean isMatched(URI link);
 
-    public abstract Mono<String> getUpdate(CommonLink link);
+    Mono<String> getUpdate(CommonLink link);
 }

@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @Component
-public class StackOverflowUpdateChecker extends UpdateChecker {
+public class StackOverflowUpdateChecker implements UpdateChecker {
     private final LinkUpdater linkUpdater;
 
     public Mono<String> getUpdate(CommonLink link) {
