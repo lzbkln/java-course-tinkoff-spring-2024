@@ -15,13 +15,16 @@ import edu.java.repository.jpa.entity.JpaLinkage;
 import edu.java.repository.jpa.entity.JpaStackOverflowQuestion;
 import edu.java.repository.jpa.entity.JpaTelegramChat;
 import edu.java.service.LinkService;
+import edu.java.service.exceptions.AlreadyTrackedLinkException;
 import edu.java.service.exceptions.NoSuchLinkException;
 import edu.java.service.exceptions.NonRegisterChatException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class JpaLinkService implements LinkService {
@@ -37,6 +40,7 @@ public class JpaLinkService implements LinkService {
     @Override
     public void saveLink(Long tgChatId, URI url) {
         checkRegisterChat(tgChatId);
+        checkAlreadyTrackedLinks(tgChatId, url);
 
         if (jpaLinkRepository.findByUrlBool(url.toString())) {
             saveLinkage(tgChatId, jpaLinkRepository.findByUrl(url.toString()).get());
@@ -50,6 +54,7 @@ public class JpaLinkService implements LinkService {
     }
 
     @Override
+    @Transactional
     public void deleteLink(Long tgChatId, URI url) {
         //не удалилось из таблицы ссылок стэк
         checkRegisterChat(tgChatId);
@@ -80,6 +85,14 @@ public class JpaLinkService implements LinkService {
 
     private void checkRegisterChat(Long chatId) {
         jpaTelegramChatRepository.findById(chatId).orElseThrow(() -> new NonRegisterChatException(chatId));
+    }
+
+    private void checkAlreadyTrackedLinks(Long tgChatId, URI url) {
+        Optional<JpaLink> existingLink = jpaLinkRepository.findByUrl(url.toString());
+        if (existingLink.isPresent()
+            && jpaLinkageRepository.findByLinkIdAndChatId(existingLink.get(), new JpaTelegramChat(tgChatId)) != null) {
+            throw new AlreadyTrackedLinkException(url);
+        }
     }
 
     private void saveLinkage(Long tgChatId, JpaLink link) {

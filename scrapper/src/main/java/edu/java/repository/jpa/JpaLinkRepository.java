@@ -18,6 +18,7 @@ public interface JpaLinkRepository extends JpaRepository<JpaLink, Long> {
     boolean findByUrlBool(@Param("url") String url);
 
     @Modifying
+    @Query("delete from JpaLink l where l.id = :id")
     void deleteById(Long id);
 
     List<JpaLink> findByLastUpdatedAtBefore(OffsetDateTime offsetDateTime);

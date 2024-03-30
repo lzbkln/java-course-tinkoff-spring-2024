@@ -18,6 +18,8 @@ public class JdbcLinkageRepository implements LinkageRepository {
         "SELECT * FROM linkage WHERE chat_id = :chat_id";
     private static final String FIND_BY_LINK_ID_SQL =
         "SELECT * FROM linkage WHERE link_id = :link_id";
+    private static final String FIND_BY_LINK_ID_AND_CHAT_ID_SQL =
+        "SELECT * FROM linkage WHERE link_id = :link_id AND chat_id = :chat_id";
     private static final String DELETE_SQL =
         "DELETE FROM linkage WHERE chat_id = :chat_id AND link_id = :link_id";
     private static final String COUNT_BY_LINK_ID_SQL =
@@ -62,5 +64,14 @@ public class JdbcLinkageRepository implements LinkageRepository {
         return jdbcClient.sql(COUNT_BY_LINK_ID_SQL)
             .param(LINK_ID, linkId)
             .query(Integer.class).single();
+    }
+
+    @Override
+    public boolean findByLinkIdAndChatId(Long linkId, Long chatId) {
+        int count = jdbcClient.sql(FIND_BY_LINK_ID_AND_CHAT_ID_SQL)
+            .param(CHAT_ID, chatId)
+            .param(LINK_ID, linkId)
+            .query(Integer.class).single();
+        return count > 0;
     }
 }

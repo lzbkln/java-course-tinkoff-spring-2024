@@ -15,6 +15,7 @@ import edu.java.repository.entity.Linkage;
 import edu.java.repository.entity.StackOverflowQuestion;
 import edu.java.repository.entity.TelegramChat;
 import edu.java.service.LinkService;
+import edu.java.service.exceptions.AlreadyTrackedLinkException;
 import edu.java.service.exceptions.NoSuchLinkException;
 import edu.java.service.exceptions.NonRegisterChatException;
 import java.net.URI;
@@ -38,6 +39,7 @@ public class JooqLinkService implements LinkService {
     @Override
     public void saveLink(Long tgChatId, URI url) {
         checkRegisterChat(tgChatId);
+        checkAlreadyTrackedLinks(tgChatId, url);
 
         if (linkRepository.findByUrlBool(url.toString())) {
             saveLinkage(tgChatId, linkRepository.findByUrl(url.toString()).getId());
@@ -86,6 +88,15 @@ public class JooqLinkService implements LinkService {
         TelegramChat telegramChat = telegramChatRepository.findById(chatId);
         if (telegramChat == null) {
             throw new NonRegisterChatException(chatId);
+        }
+    }
+
+    private void checkAlreadyTrackedLinks(Long tgChatId, URI url) {
+        Link link = linkRepository.findByUrl(url.toString());
+        if (link != null) {
+            if (linkageTableRepository.findByLinkIdAndChatId(link.getId(), tgChatId)) {
+                throw new AlreadyTrackedLinkException(url);
+            }
         }
     }
 

@@ -13,4 +13,6 @@ public interface LinkageRepository {
     void removeByChatIdAndLinkId(Long chatId, Long linkId);
 
     Integer countByLinkId(Long linkId);
+
+    boolean findByLinkIdAndChatId(Long linkId, Long chatId);
 }

@@ -1,7 +1,9 @@
 package edu.java.repository.jpa;
 
+import edu.java.repository.jpa.entity.JpaLink;
 import edu.java.repository.jpa.entity.JpaLinkage;
 import edu.java.repository.jpa.entity.JpaLinkageId;
+import edu.java.repository.jpa.entity.JpaTelegramChat;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -23,4 +25,6 @@ public interface JpaLinkageRepository extends JpaRepository<JpaLinkage, JpaLinka
 
     @Query("select count(l) from JpaLinkage l where l.linkId.id = :linkId")
     Long countByLinkId(@Param("linkId") Long linkId);
+
+    JpaLinkage findByLinkIdAndChatId(JpaLink linkId, JpaTelegramChat chatId);
 }

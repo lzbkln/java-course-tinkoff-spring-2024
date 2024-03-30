@@ -46,4 +46,9 @@ public class JooqLinkageRepository implements LinkageRepository {
             .where(LINKAGE.LINK_ID.eq(linkId))
             .fetchOne(0, Integer.class);
     }
+
+    @Override
+    public boolean findByLinkIdAndChatId(Long linkId, Long chatId) {
+        return dslContext.fetchExists(LINKAGE, LINKAGE.CHAT_ID.eq(chatId), LINKAGE.LINK_ID.eq(linkId));
+    }
 }
