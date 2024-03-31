@@ -18,7 +18,7 @@ public class JooqTelegramChatRepository implements TelegramChatRepository {
     }
 
     @Override
-    public TelegramChat findById(Long id) {
+    public TelegramChat getById(Long id) {
         return dslContext.select(CHATS.fields())
             .from(CHATS)
             .where(CHATS.ID.eq(id))

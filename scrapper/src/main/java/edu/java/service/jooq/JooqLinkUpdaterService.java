@@ -48,7 +48,7 @@ public class JooqLinkUpdaterService implements LinkUpdater {
     @Override
     public List<Long> findTgChatIds(Long linkId) {
         return linkageTableRepository
-            .findByLinkId(linkId)
+            .getByLinkId(linkId)
             .stream()
             .map(Linkage::getChatId)
             .collect(Collectors.toList());
@@ -79,7 +79,7 @@ public class JooqLinkUpdaterService implements LinkUpdater {
                     .map(GithubBranchResponseDTO::name)
                     .collect(Collectors.toList());
                 List<String> tempBranches = new ArrayList<>(newBranches);
-                List<String> oldBranches = githubBranchesRepository.findByLinkId(link.getId()).getBranches();
+                List<String> oldBranches = githubBranchesRepository.getByLinkId(link.getId()).getBranches();
                 tempBranches.removeAll(oldBranches);
                 if (!tempBranches.isEmpty()) {
                     updateGitBranches(link, newBranches);
@@ -99,7 +99,7 @@ public class JooqLinkUpdaterService implements LinkUpdater {
                 StackOverflowResponseDTO.Question question = response.items().getFirst();
                 if (question.lastActivityDate().isAfter(link.getLastUpdatedAt())) {
                     int oldCountQuestions =
-                        stackOverflowQuestionRepository.findByLinkId(link.getId()).getAnswerCount();
+                        stackOverflowQuestionRepository.getByLinkId(link.getId()).getAnswerCount();
                     if (oldCountQuestions < question.answerCount()) {
                         updateAnswerCount(link, question.answerCount());
                         return "Новый ответ на вопрос: %s".formatted(link.getUrl());

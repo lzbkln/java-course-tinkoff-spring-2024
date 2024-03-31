@@ -17,7 +17,7 @@ public interface JpaLinkageRepository extends JpaRepository<JpaLinkage, JpaLinka
     List<JpaLinkage> findByChatId(@Param("chatId") Long chatId);
 
     @Query("select l from JpaLinkage l where l.linkId.id = :linkId")
-    List<JpaLinkage> findByLinkId(@Param("linkId") Long linkId);
+    List<JpaLinkage> getByLinkId(@Param("linkId") Long linkId);
 
     @Modifying
     @Query("delete from JpaLinkage l where l.linkId.id = :linkId and l.chatId.id = :chatId")
@@ -26,5 +26,5 @@ public interface JpaLinkageRepository extends JpaRepository<JpaLinkage, JpaLinka
     @Query("select count(l) from JpaLinkage l where l.linkId.id = :linkId")
     Long countByLinkId(@Param("linkId") Long linkId);
 
-    JpaLinkage findByLinkIdAndChatId(JpaLink linkId, JpaTelegramChat chatId);
+    JpaLinkage getByLinkIdAndChatId(JpaLink linkId, JpaTelegramChat chatId);
 }

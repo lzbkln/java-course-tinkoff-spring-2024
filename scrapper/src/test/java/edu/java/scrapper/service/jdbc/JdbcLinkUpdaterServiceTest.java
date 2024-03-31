@@ -123,7 +123,7 @@ public class JdbcLinkUpdaterServiceTest extends IntegrationTest {
         List<String> newBranches = Arrays.asList("branch1", "branch2", "branch3");
         linkUpdater.updateGitBranches(new Link(1L, uri, OffsetDateTime.now()), newBranches);
 
-        GithubBranches updatedBranches = githubBranchesRepository.findByLinkId(1L);
+        GithubBranches updatedBranches = githubBranchesRepository.getByLinkId(1L);
         assertEquals(newBranches, updatedBranches.getBranches());
     }
 
@@ -136,7 +136,7 @@ public class JdbcLinkUpdaterServiceTest extends IntegrationTest {
 
         linkUpdater.updateAnswerCount(new Link(1L, uri, OffsetDateTime.now()), 3);
 
-        StackOverflowQuestion updatedQuestion = stackOverflowQuestionRepository.findByLinkId(1L);
+        StackOverflowQuestion updatedQuestion = stackOverflowQuestionRepository.getByLinkId(1L);
         assertEquals(3, updatedQuestion.getAnswerCount());
     }
 }

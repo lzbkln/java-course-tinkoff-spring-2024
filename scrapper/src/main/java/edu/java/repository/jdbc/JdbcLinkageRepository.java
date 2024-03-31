@@ -37,7 +37,7 @@ public class JdbcLinkageRepository implements LinkageRepository {
     }
 
     @Override
-    public List<Linkage> findByChatId(Long chatId) {
+    public List<Linkage> getByChatId(Long chatId) {
         return jdbcClient.sql(FIND_BY_CHAT_ID_SQL)
             .param(CHAT_ID, chatId)
             .query(ROW_MAPPER)
@@ -45,7 +45,7 @@ public class JdbcLinkageRepository implements LinkageRepository {
     }
 
     @Override
-    public List<Linkage> findByLinkId(Long linkId) {
+    public List<Linkage> getByLinkId(Long linkId) {
         return jdbcClient.sql(FIND_BY_LINK_ID_SQL)
             .param(LINK_ID, linkId)
             .query(ROW_MAPPER)

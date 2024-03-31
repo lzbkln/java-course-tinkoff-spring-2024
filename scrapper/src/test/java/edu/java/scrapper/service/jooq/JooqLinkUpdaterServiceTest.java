@@ -2,10 +2,7 @@ package edu.java.scrapper.service.jooq;
 
 import edu.java.ScrapperApplication;
 import edu.java.repository.GithubBranchesRepository;
-import edu.java.repository.LinkRepository;
-import edu.java.repository.LinkageRepository;
 import edu.java.repository.StackOverflowQuestionRepository;
-import edu.java.repository.TelegramChatRepository;
 import edu.java.repository.entity.GithubBranches;
 import edu.java.repository.entity.Link;
 import edu.java.repository.entity.StackOverflowQuestion;
@@ -133,7 +130,7 @@ public class JooqLinkUpdaterServiceTest extends IntegrationTest {
         List<String> newBranches = Arrays.asList("branch1", "branch2", "branch3");
         linkUpdater.updateGitBranches(new Link(1L, uri, OffsetDateTime.now()), newBranches);
 
-        GithubBranches updatedBranches = githubBranchesRepository.findByLinkId(1L);
+        GithubBranches updatedBranches = githubBranchesRepository.getByLinkId(1L);
         assertEquals(newBranches, updatedBranches.getBranches());
     }
 
@@ -154,7 +151,7 @@ public class JooqLinkUpdaterServiceTest extends IntegrationTest {
 
         linkUpdater.updateAnswerCount(new Link(1L, uri, OffsetDateTime.now()), 3);
 
-        StackOverflowQuestion updatedQuestion = stackOverflowQuestionRepository.findByLinkId(1L);
+        StackOverflowQuestion updatedQuestion = stackOverflowQuestionRepository.getByLinkId(1L);
         assertEquals(3, updatedQuestion.getAnswerCount());
     }
 }

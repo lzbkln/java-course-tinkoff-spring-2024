@@ -37,7 +37,7 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Override
-    public Link findById(Long id) {
+    public Link getById(Long id) {
         return jdbcClient.sql(FIND_BY_ID_SQL)
             .param(ID, id)
             .query(ROW_MAPPER)

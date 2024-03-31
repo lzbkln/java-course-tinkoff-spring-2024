@@ -75,9 +75,9 @@ public class JooqLinkService implements LinkService {
     public ListLinksResponse getAllLinksResponse(Long tgChatId) {
         checkRegisterChat(tgChatId);
 
-        List<Link> links = linkageTableRepository.findByChatId(tgChatId).stream()
+        List<Link> links = linkageTableRepository.getByChatId(tgChatId).stream()
             .map(Linkage::getLinkId)
-            .map(linkRepository::findById)
+            .map(linkRepository::getById)
             .toList();
 
         List<LinkResponse> linkResponses = links.stream()
@@ -87,7 +87,7 @@ public class JooqLinkService implements LinkService {
     }
 
     private void checkRegisterChat(Long chatId) {
-        TelegramChat telegramChat = telegramChatRepository.findById(chatId);
+        TelegramChat telegramChat = telegramChatRepository.getById(chatId);
         if (telegramChat == null) {
             throw new NonRegisterChatException(chatId);
         }

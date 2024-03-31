@@ -6,9 +6,9 @@ import java.util.List;
 public interface LinkageRepository {
     void save(Linkage linkage);
 
-    List<Linkage> findByChatId(Long chatId);
+    List<Linkage> getByChatId(Long chatId);
 
-    List<Linkage> findByLinkId(Long linkId);
+    List<Linkage> getByLinkId(Long linkId);
 
     void removeByChatIdAndLinkId(Long chatId, Long linkId);
 

@@ -89,7 +89,7 @@ public class JpaLinkService implements LinkService {
     private void checkAlreadyTrackedLinks(Long tgChatId, URI url) {
         Optional<JpaLink> existingLink = jpaLinkRepository.findByUrl(url.toString());
         if (existingLink.isPresent()
-            && jpaLinkageRepository.findByLinkIdAndChatId(existingLink.get(), new JpaTelegramChat(tgChatId)) != null) {
+            && jpaLinkageRepository.getByLinkIdAndChatId(existingLink.get(), new JpaTelegramChat(tgChatId)) != null) {
             throw new AlreadyTrackedLinkException(url);
         }
     }

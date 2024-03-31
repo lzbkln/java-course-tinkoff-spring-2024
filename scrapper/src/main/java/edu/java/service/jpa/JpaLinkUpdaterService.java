@@ -48,7 +48,7 @@ public class JpaLinkUpdaterService implements LinkUpdater {
     @Override
     public List<Long> findTgChatIds(Long linkId) {
         return jpaLinkageRepository
-            .findByLinkId(linkId)
+            .getByLinkId(linkId)
             .stream()
             .map(JpaLinkage::getChatId)
             .map(JpaTelegramChat::getId)
