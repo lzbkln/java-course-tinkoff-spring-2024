@@ -46,7 +46,6 @@ public class JdbcLinkServiceTest extends IntegrationTest {
     @Test
     @DisplayName("Test that save link works correctly")
     void testThatSaveLinkWorksCorrectly() {
-        //TODO fix
         Long tgChatId = 1L;
         URI gitUrl = URI.create("https://github.com/lzbkln/java-course-tinkoff-spring-2024");
         URI stackUrl =
