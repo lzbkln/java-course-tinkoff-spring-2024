@@ -30,7 +30,7 @@ public class JdbcStackOverflowQuestionRepository implements StackOverflowQuestio
     }
 
     @Override
-    public StackOverflowQuestion findByLinkId(Long linkId) {
+    public StackOverflowQuestion getByLinkId(Long linkId) {
         return jdbcClient.sql(FIND_BY_ID_SQL)
             .param(LINK_ID, linkId)
             .query(ROW_MAPPER)

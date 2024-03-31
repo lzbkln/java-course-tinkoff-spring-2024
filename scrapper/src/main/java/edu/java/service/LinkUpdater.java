@@ -1,12 +1,28 @@
 package edu.java.service;
 
-import edu.java.repository.entity.Link;
+import edu.java.repository.jpa.entity.CommonLink;
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Mono;
 
 public interface LinkUpdater {
-    void update(Link link);
+    @Transactional
+    void update(CommonLink link);
 
-    List<Link> findLinksToUpdate();
+    @Transactional <T extends CommonLink> List<T> findLinksToUpdate();
 
+    @Transactional
     List<Long> findTgChatIds(Long linkId);
+
+    @Transactional
+    void updateGitBranches(CommonLink link, List<String> branches);
+
+    @Transactional
+    void updateAnswerCount(CommonLink link, int answerCount);
+
+    @Transactional
+    Mono<String> getUpdateForGithub(CommonLink link);
+
+    @Transactional
+    Mono<String> getUpdateForStackOverflow(CommonLink link);
 }

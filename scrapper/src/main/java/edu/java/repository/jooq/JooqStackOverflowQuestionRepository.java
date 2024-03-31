@@ -18,7 +18,7 @@ public class JooqStackOverflowQuestionRepository implements StackOverflowQuestio
     }
 
     @Override
-    public StackOverflowQuestion findByLinkId(Long linkId) {
+    public StackOverflowQuestion getByLinkId(Long linkId) {
         return dslContext.selectFrom(STACKOVERFLOW_QUESTION)
             .where(STACKOVERFLOW_QUESTION.LINK_ID.eq(linkId))
             .fetchOneInto(StackOverflowQuestion.class);

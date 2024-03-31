@@ -6,7 +6,7 @@ public interface TelegramChatRepository {
 
     void saveUser(TelegramChat user);
 
-    TelegramChat findById(Long id);
+    TelegramChat getById(Long id);
 
     void deleteById(Long id);
 }

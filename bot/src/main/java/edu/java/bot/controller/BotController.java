@@ -18,6 +18,9 @@ public class BotController implements BotControllerAnnotations {
 
     @PostMapping
     public void update(@RequestBody LinkUpdateRequest linkUpdateRequest) {
-        linkUpdateService.sendMessage(linkUpdateRequest);
+        linkUpdateService.sendMessage(
+            linkUpdateRequest.tgChatIds(),
+            linkUpdateRequest.description()
+        );
     }
 }

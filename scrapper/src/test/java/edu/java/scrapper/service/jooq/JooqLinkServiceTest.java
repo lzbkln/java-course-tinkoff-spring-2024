@@ -8,7 +8,7 @@ import edu.java.repository.entity.Linkage;
 import edu.java.repository.entity.StackOverflowQuestion;
 import edu.java.scrapper.integration.IntegrationTest;
 import edu.java.service.LinkService;
-import edu.java.service.exceptions.NoSuchLinkException;
+import edu.java.service.exceptions.AlreadyTrackedLinkException;
 import edu.java.service.exceptions.NonRegisterChatException;
 import java.net.URI;
 import java.util.List;
@@ -130,4 +130,32 @@ public class JooqLinkServiceTest extends IntegrationTest {
         assertThrows(NonRegisterChatException.class, () -> linkService.getAllLinksResponse(tgChatId));
     }
 
+    @Test
+    @DisplayName("Test that delete link throws NonRegisterChatException")
+    void testThatDeleteLinkThrowsNonRegisterChatException() {
+        Long tgChatId = 1L;
+
+        assertThrows(NonRegisterChatException.class, () -> linkService.deleteLink(tgChatId, URI.create("")));
+    }
+
+    @Test
+    @DisplayName("Test that save link throws NonRegisterChatException")
+    void testThatSaveLinkThrowsNonRegisterChatException() {
+        Long tgChatId = 1L;
+
+        assertThrows(NonRegisterChatException.class, () -> linkService.saveLink(tgChatId, URI.create("")));
+    }
+
+    @Test
+    @DisplayName("Test that save link throws AlreadyTrackedLinkException")
+    void testThatSaveLinkThrowsAlreadyTrackedLinkException() {
+        Long tgChatId = 1L;
+        URI uri = URI.create("https://github.com");
+        dslContext.insertInto(CHATS, CHATS.ID)
+            .values(tgChatId)
+            .execute();
+        linkService.saveLink(tgChatId, uri);
+
+        assertThrows(AlreadyTrackedLinkException.class, () -> linkService.saveLink(tgChatId, uri));
+    }
 }

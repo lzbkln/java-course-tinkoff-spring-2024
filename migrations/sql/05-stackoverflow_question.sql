@@ -6,6 +6,7 @@
 -- ****************************************************
 
 CREATE TABLE IF NOT EXISTS stackoverflow_question (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     link_id BIGINT REFERENCES links (id),
     answer_count BIGINT NOT NULL
 );

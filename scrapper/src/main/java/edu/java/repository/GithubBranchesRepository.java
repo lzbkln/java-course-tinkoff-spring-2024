@@ -5,7 +5,7 @@ import edu.java.repository.entity.GithubBranches;
 public interface GithubBranchesRepository {
     void save(GithubBranches githubBranches);
 
-    GithubBranches findByLinkId(Long linkId);
+    GithubBranches getByLinkId(Long linkId);
 
     void updateData(GithubBranches githubBranches);
 

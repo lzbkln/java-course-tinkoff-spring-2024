@@ -44,7 +44,7 @@ public class JdbcTelegramChatServiceTest extends IntegrationTest {
     void testThatMethodSuccessfullyRegistersChat() {
         jdbcTelegramChatService.register(ID);
 
-        TelegramChat registeredChat = jdbcTelegramChatRepository.findById(ID);
+        TelegramChat registeredChat = jdbcTelegramChatRepository.getById(ID);
         assertNotNull(registeredChat);
         assertEquals(ID, registeredChat.getId());
     }
@@ -56,6 +56,6 @@ public class JdbcTelegramChatServiceTest extends IntegrationTest {
 
         jdbcTelegramChatService.unregister(ID);
 
-        assertThrows(EmptyResultDataAccessException.class, () -> jdbcTelegramChatRepository.findById(ID));
+        assertThrows(EmptyResultDataAccessException.class, () -> jdbcTelegramChatRepository.getById(ID));
     }
 }
