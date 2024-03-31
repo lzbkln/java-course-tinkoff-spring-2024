@@ -1,5 +1,6 @@
 package edu.java.configuration;
 
+import edu.java.configuration.access.AccessType;
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -15,7 +16,9 @@ public record ApplicationConfig(
     @NotNull
     GitHubUrl gitHubUrl,
     @NotNull
-    BotLink botLink
+    BotLink botLink,
+    @NotNull
+    AccessType databaseAccessType
 ) {
     public record BotLink(String link) {
     }

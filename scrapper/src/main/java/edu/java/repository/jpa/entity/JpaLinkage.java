@@ -1,0 +1,36 @@
+package edu.java.repository.jpa.entity;
+
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "linkage")
+@NoArgsConstructor
+public class JpaLinkage {
+    @EmbeddedId
+    private JpaLinkageId id = new JpaLinkageId();
+
+    @ManyToOne
+    @MapsId("chatId")
+    @JoinColumn(name = "chat_id", referencedColumnName = "id")
+    private JpaTelegramChat chatId;
+
+    @ManyToOne
+    @MapsId("linkId")
+    @JoinColumn(name = "link_id", referencedColumnName = "id")
+    private JpaLink linkId;
+
+    public JpaLinkage(JpaTelegramChat chatId, JpaLink linkId) {
+        this.chatId = chatId;
+        this.linkId = linkId;
+    }
+}

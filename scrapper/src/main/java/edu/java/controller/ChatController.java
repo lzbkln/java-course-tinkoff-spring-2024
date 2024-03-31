@@ -16,11 +16,11 @@ public class ChatController implements ChatApi {
 
     @PostMapping("/{id}")
     public void registerChat(@PathVariable Long id) {
-        telegramChatService.addNewChat(id);
+        telegramChatService.register(id);
     }
 
     @DeleteMapping("/{id}")
     public void deleteChat(@PathVariable Long id) {
-        telegramChatService.deleteChat(id);
+        telegramChatService.unregister(id);
     }
 }
