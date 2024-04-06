@@ -16,6 +16,9 @@ public interface ChatApi {
                                         schema = @Schema(implementation = ApiErrorResponse.class))),
         @ApiResponse(responseCode = "409", description = "Чат уже зарегистрирован",
                      content = @Content(mediaType = "application/json",
+                                        schema = @Schema(implementation = ApiErrorResponse.class))),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                     content = @Content(mediaType = "application/json",
                                         schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     void registerChat(Long id);
@@ -27,6 +30,9 @@ public interface ChatApi {
                      content = @Content(mediaType = "application/json",
                                         schema = @Schema(implementation = ApiErrorResponse.class))),
         @ApiResponse(responseCode = "404", description = "Чат не существует",
+                     content = @Content(mediaType = "application/json",
+                                        schema = @Schema(implementation = ApiErrorResponse.class))),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error",
                      content = @Content(mediaType = "application/json",
                                         schema = @Schema(implementation = ApiErrorResponse.class)))
     })
