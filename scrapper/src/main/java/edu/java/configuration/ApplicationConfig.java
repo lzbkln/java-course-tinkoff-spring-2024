@@ -47,7 +47,7 @@ public record ApplicationConfig(
                         Set<HttpStatusCodes> retryOnStatuses) {
     }
 
-    public record Kafka(@NotBlank List<String> bootstrapServers, Topic topic) {
+    public record Kafka(List<String> bootstrapServers, Topic topic) {
         public record Topic(@NotBlank String updatesTopicName, Integer partitions, Integer replicas) {
         }
     }
