@@ -14,16 +14,21 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = {BotApplication.class})
+@DirtiesContext
 public class ScrapperLinksClientTest {
 
     private static final Long NON_REGISTER_CHAT_ID = 0L;
@@ -32,14 +37,18 @@ public class ScrapperLinksClientTest {
     private static final String SCRAPPER_LINK_URI = "/scrapper/links";
 
     private static WireMockServer wireMockServer;
-    private static ScrapperLinksClient scrapperLinksClient;
+    @Autowired
+    ScrapperLinksClient scrapperLinksClient;
+
+    @DynamicPropertySource
+    private static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("app.scrapper-link.link", wireMockServer::baseUrl);
+    }
 
     @BeforeAll
     public static void setUp() {
         wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().dynamicPort());
         wireMockServer.start();
-        WireMock.configureFor("localhost", wireMockServer.port());
-        scrapperLinksClient = new ScrapperLinksClient("http://localhost:" + wireMockServer.port());
     }
 
     @AfterAll

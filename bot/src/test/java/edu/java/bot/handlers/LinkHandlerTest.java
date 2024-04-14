@@ -2,9 +2,11 @@ package edu.java.bot.handlers;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.annotation.DirtiesContext;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@DirtiesContext
 public class LinkHandlerTest {
 
     @Test

@@ -5,6 +5,7 @@ import edu.java.bot.clients.ScrapperLinksClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import reactor.util.retry.Retry;
 
 @Configuration
 @RequiredArgsConstructor
@@ -13,13 +14,13 @@ public class ScrapperConfig {
     private static final String BASE_URL = "http://localhost:8080";
 
     @Bean
-    public ScrapperChatClient createChatClient() {
-        return new ScrapperChatClient(getUrl());
+    public ScrapperChatClient createChatClient(Retry retry) {
+        return new ScrapperChatClient(getUrl(), retry);
     }
 
     @Bean
-    public ScrapperLinksClient createLinkClient() {
-        return new ScrapperLinksClient(getUrl());
+    public ScrapperLinksClient createLinkClient(Retry retry) {
+        return new ScrapperLinksClient(getUrl(), retry);
     }
 
     private String getUrl() {
