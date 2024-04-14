@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -36,16 +37,19 @@ public class JpaLinkUpdaterService implements LinkUpdater {
     private final StackOverflowClient stackOverflowClient;
 
     @Override
+    @Transactional
     public void update(CommonLink link) {
         jpaLinkRepository.saveAndFlush((JpaLink) link);
     }
 
     @Override
+    @Transactional
     public List<JpaLink> findLinksToUpdate() {
         return jpaLinkRepository.findByLastUpdatedAtBefore(OffsetDateTime.now().minusHours(1));
     }
 
     @Override
+    @Transactional
     public List<Long> findTgChatIds(Long linkId) {
         return jpaLinkageRepository
             .getByLinkId(linkId)
@@ -73,6 +77,7 @@ public class JpaLinkUpdaterService implements LinkUpdater {
     }
 
     @Override
+    @Transactional
     public Mono<String> getUpdateForGithub(CommonLink link) {
         String path = utils.extractPathForGithub(link.getUrl());
         return gitHubClient.getUserRepository(path)
@@ -100,6 +105,7 @@ public class JpaLinkUpdaterService implements LinkUpdater {
     }
 
     @Override
+    @Transactional
     public Mono<String> getUpdateForStackOverflow(CommonLink link) {
         String questionId = utils.extractPathForStackoverflow(link.getUrl());
         return stackOverflowClient.getQuestionsInfo(questionId)

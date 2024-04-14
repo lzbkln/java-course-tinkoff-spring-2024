@@ -38,11 +38,12 @@ public class JpaLinkService implements LinkService {
     private static final String STACK_OVERFLOW_HOST = "stackoverflow.com";
 
     @Override
+    @Transactional
     public void saveLink(Long tgChatId, URI url) {
         checkRegisterChat(tgChatId);
         checkAlreadyTrackedLinks(tgChatId, url);
 
-        if (jpaLinkRepository.findByUrlBool(url.toString())) {
+        if (jpaLinkRepository.existsByUrl(url.toString())) {
             saveLinkage(tgChatId, jpaLinkRepository.findByUrl(url.toString()).get());
         } else {
             JpaLink newLink = new JpaLink(url.toString());
@@ -69,6 +70,7 @@ public class JpaLinkService implements LinkService {
     }
 
     @Override
+    @Transactional
     public ListLinksResponse getAllLinksResponse(Long tgChatId) {
         checkRegisterChat(tgChatId);
 

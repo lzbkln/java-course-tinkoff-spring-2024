@@ -8,12 +8,14 @@ import edu.java.service.exceptions.ReRegistrationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class JooqTelegramChatService implements TelegramChatService {
     private final TelegramChatRepository telegramChatRepository;
 
     @Override
+    @Transactional
     public void register(Long tgChatId) {
         try {
             telegramChatRepository.saveUser(new TelegramChat(tgChatId));
@@ -23,6 +25,7 @@ public class JooqTelegramChatService implements TelegramChatService {
     }
 
     @Override
+    @Transactional
     public void unregister(Long tgChatId) {
         try {
             telegramChatRepository.deleteById(tgChatId);

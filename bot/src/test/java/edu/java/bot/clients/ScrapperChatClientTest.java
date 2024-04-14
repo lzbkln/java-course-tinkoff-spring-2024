@@ -8,25 +8,34 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest(classes = {BotApplication.class})
+@DirtiesContext
 public class ScrapperChatClientTest {
     private static WireMockServer wireMockServer;
-    private static ScrapperChatClient scrapperChatClient;
+    @Autowired
+    ScrapperChatClient scrapperChatClient;
     private static final String TG_CHAT = "/scrapper/tg-chat/%d";
+
+    @DynamicPropertySource
+    private static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("app.scrapper-link.link", wireMockServer::baseUrl);
+    }
 
     @BeforeAll
     public static void setUp() {
         wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().dynamicPort());
         wireMockServer.start();
-        WireMock.configureFor("localhost", wireMockServer.port());
-        scrapperChatClient = new ScrapperChatClient("http://localhost:" + wireMockServer.port());
     }
 
     @AfterAll

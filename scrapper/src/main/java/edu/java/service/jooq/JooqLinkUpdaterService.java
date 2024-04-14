@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -35,17 +36,19 @@ public class JooqLinkUpdaterService implements LinkUpdater {
     private final StackOverflowClient stackOverflowClient;
 
     @Override
+    @Transactional
     public void update(CommonLink link) {
         linkRepository.updateLink(new Link(link.getId(), link.getUrl(), link.getLastUpdatedAt()));
     }
 
     @Override
-    @SuppressWarnings("MagicNumber")
+    @Transactional
     public List<Link> findLinksToUpdate() {
         return linkRepository.findByLastUpdatedAtBefore(OffsetDateTime.now().minusHours(1));
     }
 
     @Override
+    @Transactional
     public List<Long> findTgChatIds(Long linkId) {
         return linkageTableRepository
             .getByLinkId(linkId)
@@ -65,6 +68,7 @@ public class JooqLinkUpdaterService implements LinkUpdater {
     }
 
     @Override
+    @Transactional
     public Mono<String> getUpdateForGithub(CommonLink link) {
         String path = utils.extractPathForGithub(link.getUrl());
         return gitHubClient.getUserRepository(path)
@@ -91,6 +95,7 @@ public class JooqLinkUpdaterService implements LinkUpdater {
     }
 
     @Override
+    @Transactional
     public Mono<String> getUpdateForStackOverflow(CommonLink link) {
         String questionId = utils.extractPathForStackoverflow(link.getUrl());
         return stackOverflowClient.getQuestionsInfo(questionId)

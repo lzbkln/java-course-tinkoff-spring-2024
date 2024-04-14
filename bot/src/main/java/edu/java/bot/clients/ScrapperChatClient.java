@@ -8,16 +8,19 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 public class ScrapperChatClient {
     private final WebClient webClient;
+    private final Retry retry;
     private static final String TG_CHAT = "/scrapper/tg-chat/{id}";
 
-    public ScrapperChatClient(String baseUrl) {
+    public ScrapperChatClient(String baseUrl, Retry retry) {
         webClient = WebClient.builder()
             .baseUrl(baseUrl)
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .build();
+        this.retry = retry;
     }
 
     public Mono<ResponseEntity<Void>> registerChat(Long id) {
@@ -32,7 +35,8 @@ public class ScrapperChatClient {
                     .map(ApiErrorResponseException::new)
                     .flatMap(Mono::error)
             )
-            .toBodilessEntity();
+            .toBodilessEntity()
+            .retryWhen(retry);
     }
 
     public Mono<ResponseEntity<Void>> deleteChat(Long id) {
@@ -47,6 +51,7 @@ public class ScrapperChatClient {
                     .map(ApiErrorResponseException::new)
                     .flatMap(Mono::error)
             )
-            .toBodilessEntity();
+            .toBodilessEntity()
+            .retryWhen(retry);
     }
 }

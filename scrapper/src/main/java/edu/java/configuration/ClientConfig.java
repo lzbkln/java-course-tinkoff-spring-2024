@@ -5,6 +5,7 @@ import edu.java.clients.sites.StackOverflowClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import reactor.util.retry.Retry;
 
 @Configuration
 @RequiredArgsConstructor
@@ -14,13 +15,13 @@ public class ClientConfig {
     private static final String GITHUB_BASE_URL = "https://api.github.com";
 
     @Bean
-    public GitHubClient gitHubClient() {
-        return new GitHubClient(getGitHubBaseUrl());
+    public GitHubClient gitHubClient(Retry retry) {
+        return new GitHubClient(getGitHubBaseUrl(), retry);
     }
 
     @Bean
-    public StackOverflowClient stackOverflowClient() {
-        return new StackOverflowClient(getStackOverflowBaseUrl());
+    public StackOverflowClient stackOverflowClient(Retry retry) {
+        return new StackOverflowClient(getStackOverflowBaseUrl(), retry);
     }
 
     private String getGitHubBaseUrl() {

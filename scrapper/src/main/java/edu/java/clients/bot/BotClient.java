@@ -7,12 +7,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 public class BotClient {
     private final WebClient webClient;
+    private final Retry retry;
 
-    public BotClient(String baseUrl) {
+    public BotClient(String baseUrl, Retry retry) {
         webClient = WebClient.create(baseUrl);
+        this.retry = retry;
     }
 
     public Mono<ResponseEntity<Void>> sendUpdate(LinkUpdateRequest request) {
@@ -26,6 +29,7 @@ public class BotClient {
                     .map(ApiErrorResponseException::new)
                     .flatMap(Mono::error)
             )
-            .toEntity(Void.class);
+            .toEntity(Void.class)
+            .retryWhen(retry);
     }
 }

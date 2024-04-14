@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class JdbcLinkService implements LinkService {
@@ -38,6 +39,7 @@ public class JdbcLinkService implements LinkService {
     private static final String STACK_OVERFLOW_HOST = "stackoverflow.com";
 
     @Override
+    @Transactional
     public void saveLink(Long tgChatId, URI url) {
         checkRegisterChat(tgChatId);
         checkAlreadyTrackedLinks(tgChatId, url);
@@ -54,6 +56,7 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
+    @Transactional
     public void deleteLink(Long tgChatId, URI url) {
         checkRegisterChat(tgChatId);
         try {
@@ -70,6 +73,7 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
+    @Transactional
     public ListLinksResponse getAllLinksResponse(Long tgChatId) {
         checkRegisterChat(tgChatId);
 
