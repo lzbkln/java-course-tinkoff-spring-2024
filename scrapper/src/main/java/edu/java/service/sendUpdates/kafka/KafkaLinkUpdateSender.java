@@ -16,9 +16,9 @@ public class KafkaLinkUpdateSender implements SendUpdatesService {
     @Override
     public void sendUpdate(LinkUpdateRequest update) {
         String updatesTopicName = config.kafka().topic().updatesTopicName();
-        log.warn("Try sending message to kafka");
+        log.info("Try sending message to kafka");
         try {
-            log.warn("Topic name: {}", updatesTopicName);
+            log.info("Topic name: {}", updatesTopicName);
             kafkaTemplate.send(updatesTopicName, update).whenComplete(
                 (sendResult, throwable) -> {
                     if (throwable != null) {

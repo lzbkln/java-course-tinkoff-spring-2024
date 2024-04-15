@@ -4,6 +4,7 @@ import edu.java.bot.dto.requests.LinkUpdateRequest;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -17,6 +18,7 @@ import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
@@ -52,6 +54,16 @@ public class KafkaConfig {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
+    @Bean
+    public KafkaAdmin kafkaAdmin() {
+        Map<String, Object> configs = new HashMap<>();
+        configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, config.kafka().bootstrapServers());
+
+        KafkaAdmin kafkaAdmin = new KafkaAdmin(configs);
+        kafkaAdmin.createOrModifyTopics(newTopic(), newDlqTopic());
+        return kafkaAdmin;
+    }
+
     public Map<String, Object> producerConfigs() {
         Map<String, Object> props = new HashMap<>();
 
@@ -68,8 +80,8 @@ public class KafkaConfig {
     }
 
     @Bean
-    KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, LinkUpdateRequest>> kafkaListenerContainerFactory(
-    ) {
+    KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, LinkUpdateRequest>>
+    kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, LinkUpdateRequest> factory =
             new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
