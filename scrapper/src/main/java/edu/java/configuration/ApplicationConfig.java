@@ -6,7 +6,6 @@ import edu.java.configuration.retry.RetryType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
-import java.util.List;
 import java.util.Set;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
@@ -47,7 +46,7 @@ public record ApplicationConfig(
                         Set<HttpStatusCodes> retryOnStatuses) {
     }
 
-    public record Kafka(List<String> bootstrapServers, Topic topic) {
+    public record Kafka(@NotBlank String bootstrapServers, Topic topic) {
         public record Topic(@NotBlank String updatesTopicName, Integer partitions, Integer replicas) {
         }
     }

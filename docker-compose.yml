@@ -105,6 +105,13 @@ services:
       "
       # blocks until kafka is reachable
       kafka-topics --bootstrap-server kafka1:9091,kafka2:9092,kafka3:9093 --list
+
+      echo -e 'Creating kafka topics'
+      kafka-topics --bootstrap-server kafka1:9091,kafka2:9092,kafka3:9093 --create --if-not-exists --topic scrapper.update --replication-factor 2 --partitions 2
+      kafka-topics --bootstrap-server kafka1:9091,kafka2:9092,kafka3:9093 --create --if-not-exists --topic scrapper.update_dlq --replication-factor 2 --partitions 2
+
+      echo -e 'Successfully created the following topics:'
+      kafka-topics --bootstrap-server kafka1:9091,kafka2:9092,kafka3:9093 --list
       "
 
 volumes:
