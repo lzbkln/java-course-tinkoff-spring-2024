@@ -17,6 +17,7 @@ app:
       - SERVER_ERROR
     type: LINEAR
     delay: 1s
+  use-queue: true
   kafka:
     bootstrap-servers:
       - localhost:29091
@@ -26,7 +27,6 @@ app:
       updates-topic-name: scrapper.update
       partitions: 2
       replicas: 2
-  use-queue: true
 
 
 spring:
