@@ -10,16 +10,19 @@ import edu.java.bot.dto.responses.LinkResponse;
 import edu.java.bot.dto.responses.ListLinksResponse;
 import java.net.URI;
 import java.util.List;
+import org.apache.kafka.clients.admin.AdminClient;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -30,7 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(classes = {BotApplication.class})
 @DirtiesContext
 public class ScrapperLinksClientTest {
-
+    @MockBean AdminClient adminClient;
+    @MockBean KafkaAdmin kafkaAdmin;
     private static final Long NON_REGISTER_CHAT_ID = 0L;
     private static final Long REGISTER_CHAT_ID = 2L;
     private static final String TG_CHAT_ID = "Tg-Chat-Id";

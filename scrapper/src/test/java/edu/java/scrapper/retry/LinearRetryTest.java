@@ -10,12 +10,15 @@ import edu.java.dto.requests.LinkUpdateRequest;
 import java.time.Duration;
 import java.util.List;
 import java.util.Set;
+import org.apache.kafka.clients.admin.AdminClient;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -26,6 +29,8 @@ import static edu.java.configuration.retry.RetryType.LINEAR;
 @SpringBootTest(classes = {ScrapperApplication.class})
 @DirtiesContext
 public class LinearRetryTest {
+    @MockBean AdminClient adminClient;
+    @MockBean KafkaAdmin kafkaAdmin;
     @Autowired
     private BotClient botClient;
     private static final String POST = "/bot/update";

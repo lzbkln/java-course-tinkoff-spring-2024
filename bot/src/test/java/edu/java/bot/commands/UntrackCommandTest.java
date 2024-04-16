@@ -8,6 +8,7 @@ import edu.java.bot.BotApplication;
 import edu.java.bot.clients.ScrapperLinksClient;
 import edu.java.bot.handlers.LinkHandler;
 import java.net.URISyntaxException;
+import org.apache.kafka.clients.admin.AdminClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.test.annotation.DirtiesContext;
 import reactor.core.publisher.Mono;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,6 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest(classes = {BotApplication.class})
 @DirtiesContext
 public class UntrackCommandTest {
+    @MockBean AdminClient adminClient;
+    @MockBean KafkaAdmin kafkaAdmin;
     @Mock
     private Update update;
     @Mock
