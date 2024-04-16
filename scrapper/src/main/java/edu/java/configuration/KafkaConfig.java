@@ -10,6 +10,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaAdmin;
@@ -19,6 +20,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 
 @Configuration
 @RequiredArgsConstructor
+@EnableKafka
 public class KafkaConfig {
     private final ApplicationConfig config;
 
@@ -58,7 +60,8 @@ public class KafkaConfig {
 
     @Bean
     public KafkaTemplate<String, LinkUpdateRequest> kafkaTemplate(
-        ProducerFactory<String, LinkUpdateRequest> producerFactory) {
+        ProducerFactory<String, LinkUpdateRequest> producerFactory
+    ) {
         return new KafkaTemplate<>(producerFactory);
     }
 }

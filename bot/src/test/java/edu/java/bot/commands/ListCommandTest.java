@@ -12,13 +12,16 @@ import edu.java.bot.dto.responses.ListLinksResponse;
 import java.net.URI;
 import java.util.List;
 import edu.java.bot.exception.ApiErrorResponseException;
+import org.apache.kafka.clients.admin.AdminClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.test.annotation.DirtiesContext;
 import reactor.core.publisher.Mono;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest(classes = {BotApplication.class})
 @DirtiesContext
 public class ListCommandTest {
+
     @Mock
     private Update update;
     @Mock

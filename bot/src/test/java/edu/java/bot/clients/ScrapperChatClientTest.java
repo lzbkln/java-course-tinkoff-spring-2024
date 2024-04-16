@@ -4,14 +4,17 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import edu.java.bot.BotApplication;
+import org.apache.kafka.clients.admin.AdminClient;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -22,6 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest(classes = {BotApplication.class})
 @DirtiesContext
 public class ScrapperChatClientTest {
+    @MockBean AdminClient adminClient;
+    @MockBean KafkaAdmin kafkaAdmin;
     private static WireMockServer wireMockServer;
     @Autowired
     ScrapperChatClient scrapperChatClient;
