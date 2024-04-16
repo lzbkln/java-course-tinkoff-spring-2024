@@ -6,12 +6,10 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.BotApplication;
 import edu.java.bot.clients.ScrapperLinksClient;
-import edu.java.bot.dto.responses.ApiErrorResponse;
 import edu.java.bot.dto.responses.LinkResponse;
 import edu.java.bot.dto.responses.ListLinksResponse;
 import java.net.URI;
 import java.util.List;
-import edu.java.bot.exception.ApiErrorResponseException;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest(classes = {BotApplication.class})
 @DirtiesContext
 public class ListCommandTest {
-
+    @MockBean AdminClient adminClient;
+    @MockBean KafkaAdmin kafkaAdmin;
     @Mock
     private Update update;
     @Mock
@@ -88,5 +87,3 @@ public class ListCommandTest {
         assertEquals(expectedBotCommand.description(), listCommand.getBotCommand().description());
     }
 }
-
-

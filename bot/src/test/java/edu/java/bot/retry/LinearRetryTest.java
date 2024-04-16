@@ -27,7 +27,8 @@ import static edu.java.bot.configuration.retry.RetryType.LINEAR;
 @SpringBootTest(classes = {BotApplication.class})
 @DirtiesContext
 public class LinearRetryTest {
-
+    @MockBean AdminClient adminClient;
+    @MockBean KafkaAdmin kafkaAdmin;
     @Autowired
     private ScrapperChatClient scrapperChatClient;
     private static final String TG_CHAT = "/scrapper/tg-chat/%d";
