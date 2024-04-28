@@ -63,6 +63,13 @@ management:
         include: health, info, prometheus
       path-mapping:
         prometheus: metrics
+  endpoint:
+    health:
+      enabled: true
+    info:
+      enabled: true
+    prometheus:
+      enabled: true
   metrics:
     tags:
       application: ${spring.application.name}
