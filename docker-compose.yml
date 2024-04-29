@@ -114,11 +114,29 @@ services:
       kafka-topics --bootstrap-server kafka1:9091,kafka2:9092,kafka3:9093 --list
       "
 
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana-oss
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+
 volumes:
   postgresql: { }
   kafka1: { }
   kafka2: { }
   kafka3: { }
+  grafana_data: { }
+  prometheus_data: { }
 
 networks:
   backend: { }

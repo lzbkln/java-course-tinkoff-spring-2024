@@ -22,7 +22,9 @@ public record ApplicationConfig(
     @NotNull
     Kafka kafka,
     @NotBlank
-    String dlqTopicSuffix
+    String dlqTopicSuffix,
+    @NotBlank
+    String nameOfMetric
 ) {
     public record ScrapperLink(String link) {
     }
