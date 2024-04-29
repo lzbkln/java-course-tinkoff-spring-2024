@@ -6,10 +6,9 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.service.CommandService;
 import io.micrometer.core.instrument.Counter;
+import java.util.List;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class TelegramController implements UpdatesListener {
