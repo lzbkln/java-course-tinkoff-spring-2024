@@ -24,6 +24,7 @@ app:
       updates-topic-name: scrapper.update
       partitions: 2
       replicas: 2
+  name-of-metric: count_of_messages_processed
 
 
 spring:

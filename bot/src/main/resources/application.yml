@@ -16,6 +16,7 @@ app:
       partitions: 2
       replicas: 2
   dlq-topic-suffix: _dlq
+  name-of-metric: count_of_messages_processed
 
 spring:
   application:

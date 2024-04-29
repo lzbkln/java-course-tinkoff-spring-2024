@@ -28,7 +28,9 @@ public record ApplicationConfig(
     @NotNull
     Kafka kafka,
     @NotNull
-    Boolean useQueue
+    Boolean useQueue,
+    @NotBlank
+    String nameOfMetric
 ) {
     public record BotLink(String link) {
     }
