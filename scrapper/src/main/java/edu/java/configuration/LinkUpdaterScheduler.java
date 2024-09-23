@@ -57,13 +57,10 @@ public class LinkUpdaterScheduler {
                     error -> {
                     },
                     () -> {
-                        if (link instanceof Link) {
-                            Link updatedLink = new Link(link.getId(), link.getUrl(), OffsetDateTime.now());
-                            linkUpdater.update(updatedLink);
-                        } else if (link instanceof JpaLink) {
-                            JpaLink updatedLink = new JpaLink(link.getId(), link.getUrl(), OffsetDateTime.now());
-                            linkUpdater.update(updatedLink);
-                        }
+                        CommonLink updatedLink = link instanceof Link
+                            ? new Link(link.getId(), link.getUrl(), OffsetDateTime.now())
+                            : new JpaLink(link.getId(), link.getUrl(), OffsetDateTime.now());
+                        linkUpdater.update(updatedLink);
                     }
                 );
         });

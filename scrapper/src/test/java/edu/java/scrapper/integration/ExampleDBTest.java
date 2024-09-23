@@ -3,10 +3,12 @@ package edu.java.scrapper.integration;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@DirtiesContext
 public class ExampleDBTest extends IntegrationTest {
     @Test
     @DisplayName("Test that all tables exist")

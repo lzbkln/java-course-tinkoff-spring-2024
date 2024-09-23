@@ -10,6 +10,13 @@ app:
   bot-link:
     link: http://localhost:8090
   database-access-type: JPA
+  retry:
+    max-attempts: 3
+    retry-on-statuses:
+      - CLIENT_ERROR
+      - SERVER_ERROR
+    type: LINEAR
+    delay: 1s
 
 
 spring:
@@ -26,6 +33,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  cache:
+    cache-names: rate-limit-bucket-scrapper
+    caffeine:
+      spec: maximumSize=50000,expireAfterAccess=3600s
 
 server:
   port: 8080
@@ -37,3 +48,17 @@ springdoc:
   show-actuator: true
   swagger-ui:
     path: /scrapper/swagger-ui
+
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: rate-limit-bucket-scrapper
+      url: /.*
+      http-response-body: "{ \"status\": 429, \"error\": \"Too Many Requests\", \"message\": \"You have exhausted your API Request Quota\" }"
+      rate-limits:
+        - bandwidths:
+            - capacity: 20
+              time: 1
+              unit: minutes
+              refill-speed: interval

@@ -7,15 +7,13 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface JpaLinkRepository extends JpaRepository<JpaLink, Long> {
     Optional<JpaLink> findByUrl(String url);
 
-    @Query("select case when count(l) > 0 then true else false end from JpaLink l where l.url = :url")
-    boolean findByUrlBool(@Param("url") String url);
+    boolean existsByUrl(String url);
 
     @Modifying
     @Query("delete from JpaLink l where l.id = :id")
