@@ -1,6 +1,6 @@
 package edu.java.repository.entity;
 
-import java.util.Set;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class GithubBranches {
     private Long linkId;
-    private Set<String> branches;
+    private List<String> branches;
 
 }

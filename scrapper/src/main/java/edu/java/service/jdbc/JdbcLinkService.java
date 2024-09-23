@@ -14,16 +14,17 @@ import edu.java.repository.entity.Link;
 import edu.java.repository.entity.Linkage;
 import edu.java.repository.entity.StackOverflowQuestion;
 import edu.java.service.LinkService;
+import edu.java.service.exceptions.AlreadyTrackedLinkException;
 import edu.java.service.exceptions.NoSuchLinkException;
 import edu.java.service.exceptions.NonRegisterChatException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class JdbcLinkService implements LinkService {
@@ -37,12 +38,12 @@ public class JdbcLinkService implements LinkService {
     private static final String STACK_OVERFLOW_HOST = "stackoverflow.com";
 
     @Override
-    @Transactional
     public void saveLink(Long tgChatId, URI url) {
         checkRegisterChat(tgChatId);
+        checkAlreadyTrackedLinks(tgChatId, url);
 
         if (linkRepository.findByUrlBool(url.toString())) {
-            saveLinkage(tgChatId, linkRepository.findByUrl(url.toString()).getId());
+            saveLinkage(tgChatId, linkRepository.findByUrl(url.toString()).get().getId());
         } else {
             Link newLink = new Link(url.toString());
             Long linkId = saveNewLink(newLink);
@@ -53,30 +54,28 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
-    @Transactional
     public void deleteLink(Long tgChatId, URI url) {
         checkRegisterChat(tgChatId);
         try {
-            Link link = linkRepository.findByUrl(url.toString());
-            Long linkId = link.getId();
+            Optional<Link> link = linkRepository.findByUrl(url.toString());
+            Long linkId = link.get().getId();
             linkageTableRepository.removeByChatIdAndLinkId(tgChatId, linkId);
             if (linkageTableRepository.countByLinkId(linkId) == 0) {
                 removeAdditionalData(linkId, url);
                 linkRepository.removeById(linkId);
             }
-        } catch (EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException | NoSuchElementException exception) {
             throw new NoSuchLinkException(url);
         }
     }
 
     @Override
-    @Transactional
     public ListLinksResponse getAllLinksResponse(Long tgChatId) {
         checkRegisterChat(tgChatId);
 
-        List<Link> links = linkageTableRepository.findByChatId(tgChatId).stream()
+        List<Link> links = linkageTableRepository.getByChatId(tgChatId).stream()
             .map(Linkage::getLinkId)
-            .map(linkRepository::findById)
+            .map(linkRepository::getById)
             .toList();
 
         List<LinkResponse> linkResponses = links.stream()
@@ -87,9 +86,18 @@ public class JdbcLinkService implements LinkService {
 
     private void checkRegisterChat(Long chatId) {
         try {
-            telegramChatRepository.findById(chatId);
+            telegramChatRepository.getById(chatId);
         } catch (EmptyResultDataAccessException e) {
             throw new NonRegisterChatException(chatId);
+        }
+    }
+
+    private void checkAlreadyTrackedLinks(Long tgChatId, URI url) {
+        Optional<Link> link = linkRepository.findByUrl(url.toString());
+        if (linkRepository.findByUrl(url.toString()).isPresent()) {
+            if (linkageTableRepository.findByLinkIdAndChatId(link.get().getId(), tgChatId)) {
+                throw new AlreadyTrackedLinkException(url);
+            }
         }
     }
 
@@ -99,16 +107,16 @@ public class JdbcLinkService implements LinkService {
 
     private Long saveNewLink(Link link) {
         linkRepository.save(link);
-        return linkRepository.findByUrl(link.getUrl()).getId();
+        return linkRepository.findByUrl(link.getUrl()).get().getId();
     }
 
     private void saveAdditionalData(Long linkId, URI url) {
         if (url.getHost().equals(GITHUB_HOST)) {
             clientUtil.getBranches(url.toString())
                 .map(response -> {
-                    Set<String> branches = Arrays.stream(response)
+                    List<String> branches = Arrays.stream(response)
                         .map(GithubBranchResponseDTO::name)
-                        .collect(Collectors.toSet());
+                        .collect(Collectors.toList());
                     return new GithubBranches(linkId, branches);
                 })
                 .doOnSuccess(githubBranchesRepository::save)

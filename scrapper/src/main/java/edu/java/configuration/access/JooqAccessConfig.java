@@ -1,5 +1,7 @@
-package edu.java.configuration;
+package edu.java.configuration.access;
 
+import edu.java.clients.sites.GitHubClient;
+import edu.java.clients.sites.StackOverflowClient;
 import edu.java.clients.sites.util.Utils;
 import edu.java.repository.GithubBranchesRepository;
 import edu.java.repository.LinkRepository;
@@ -51,8 +53,24 @@ public class JooqAccessConfig {
     }
 
     @Bean
-    public LinkUpdater linkUpdater(LinkRepository linkRepository, LinkageRepository linkageRepository) {
-        return new JooqLinkUpdaterService(linkRepository, linkageRepository);
+    public LinkUpdater linkUpdater(
+        LinkRepository linkRepository,
+        LinkageRepository linkageRepository,
+        GithubBranchesRepository githubBranchesRepository,
+        StackOverflowQuestionRepository stackOverflowQuestionRepository,
+        Utils utils,
+        GitHubClient gitHubClient,
+        StackOverflowClient stackOverflowClient
+    ) {
+        return new JooqLinkUpdaterService(
+            linkRepository,
+            linkageRepository,
+            githubBranchesRepository,
+            stackOverflowQuestionRepository,
+            utils,
+            gitHubClient,
+            stackOverflowClient
+        );
     }
 
     @Bean

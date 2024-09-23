@@ -3,7 +3,9 @@ package edu.java.repository.jdbc;
 import edu.java.repository.LinkRepository;
 import edu.java.repository.entity.Link;
 import edu.java.repository.jdbc.rowMappers.LinkRowMapper;
+import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -19,7 +21,7 @@ public class JdbcLinkRepository implements LinkRepository {
     private static final String UPDATE_LINK_SQL =
         "UPDATE links SET last_updated_at = :last_updated_at WHERE id = :id";
     private static final String FIND_LINKS_TO_UPDATE_SQL =
-        "SELECT * FROM links WHERE last_updated_at < NOW() - INTERVAL '1 hour'";
+        "SELECT * FROM links WHERE last_updated_at < :time";
     private static final String COUNT_BY_LINK_ID_SQL =
         "SELECT COUNT(*) FROM links WHERE url = :url";
     private static final String ID = "id";
@@ -35,7 +37,7 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Override
-    public Link findById(Long id) {
+    public Link getById(Long id) {
         return jdbcClient.sql(FIND_BY_ID_SQL)
             .param(ID, id)
             .query(ROW_MAPPER)
@@ -43,11 +45,11 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Override
-    public Link findByUrl(String url) {
+    public Optional<Link> findByUrl(String url) {
         return jdbcClient.sql(FIND_BY_URL_SQL)
             .param(URL, url)
             .query(ROW_MAPPER)
-            .single();
+            .optional();
     }
 
     @Override
@@ -74,8 +76,9 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Override
-    public List<Link> findLinksToUpdate() {
+    public List<Link> findByLastUpdatedAtBefore(OffsetDateTime time) {
         return jdbcClient.sql(FIND_LINKS_TO_UPDATE_SQL)
+            .param("time", time)
             .query(ROW_MAPPER)
             .list();
     }

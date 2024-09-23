@@ -19,14 +19,14 @@ public class JooqLinkageRepository implements LinkageRepository {
     }
 
     @Override
-    public List<Linkage> findByChatId(Long chatId) {
+    public List<Linkage> getByChatId(Long chatId) {
         return dslContext.selectFrom(LINKAGE)
             .where(LINKAGE.CHAT_ID.eq(chatId))
             .fetchInto(Linkage.class);
     }
 
     @Override
-    public List<Linkage> findByLinkId(Long linkId) {
+    public List<Linkage> getByLinkId(Long linkId) {
         return dslContext.selectFrom(LINKAGE)
             .where(LINKAGE.LINK_ID.eq(linkId))
             .fetchInto(Linkage.class);
@@ -45,5 +45,10 @@ public class JooqLinkageRepository implements LinkageRepository {
             .from(LINKAGE)
             .where(LINKAGE.LINK_ID.eq(linkId))
             .fetchOne(0, Integer.class);
+    }
+
+    @Override
+    public boolean findByLinkIdAndChatId(Long linkId, Long chatId) {
+        return dslContext.fetchExists(LINKAGE, LINKAGE.CHAT_ID.eq(chatId), LINKAGE.LINK_ID.eq(linkId));
     }
 }
