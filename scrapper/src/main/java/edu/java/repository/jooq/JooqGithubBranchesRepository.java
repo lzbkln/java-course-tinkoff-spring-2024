@@ -18,7 +18,7 @@ public class JooqGithubBranchesRepository implements GithubBranchesRepository {
     }
 
     @Override
-    public GithubBranches findByLinkId(Long linkId) {
+    public GithubBranches getByLinkId(Long linkId) {
         return dslContext.selectFrom(GITHUB_BRANCHES)
             .where(GITHUB_BRANCHES.LINK_ID.eq(linkId))
             .fetchOneInto(GithubBranches.class);

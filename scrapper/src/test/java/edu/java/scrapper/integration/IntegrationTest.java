@@ -28,16 +28,17 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Transactional
 public abstract class IntegrationTest {
     public static PostgreSQLContainer<?> POSTGRES;
+
     @Autowired
     public JdbcTemplate jdbcTemplate;
 
     @BeforeEach
     public void restartTest() {
         jdbcTemplate.update("TRUNCATE linkage RESTART IDENTITY");
-        jdbcTemplate.update("TRUNCATE chats RESTART IDENTITY CASCADE");
-        jdbcTemplate.update("TRUNCATE links RESTART IDENTITY CASCADE");
         jdbcTemplate.update("TRUNCATE github_branches RESTART IDENTITY CASCADE");
         jdbcTemplate.update("TRUNCATE stackoverflow_question RESTART IDENTITY CASCADE");
+        jdbcTemplate.update("TRUNCATE chats RESTART IDENTITY CASCADE");
+        jdbcTemplate.update("TRUNCATE links RESTART IDENTITY CASCADE");
     }
 
     static {

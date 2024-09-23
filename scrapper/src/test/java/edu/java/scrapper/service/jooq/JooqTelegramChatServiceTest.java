@@ -44,7 +44,7 @@ public class JooqTelegramChatServiceTest extends IntegrationTest {
     void testThatMethodSuccessfullyRegistersChat() {
         jooqTelegramChatService.register(ID);
 
-        TelegramChat registeredChat = jooqTelegramChatRepository.findById(ID);
+        TelegramChat registeredChat = jooqTelegramChatRepository.getById(ID);
         assertNotNull(registeredChat);
         assertEquals(ID, registeredChat.getId());
     }
@@ -56,6 +56,6 @@ public class JooqTelegramChatServiceTest extends IntegrationTest {
 
         jooqTelegramChatService.unregister(ID);
 
-        assertNull(jooqTelegramChatRepository.findById(ID));
+        assertNull(jooqTelegramChatRepository.getById(ID));
     }
 }

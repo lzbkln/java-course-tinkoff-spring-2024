@@ -24,7 +24,7 @@ public class JdbcTelegramChatRepository implements TelegramChatRepository {
     }
 
     @Override
-    public TelegramChat findById(Long id) {
+    public TelegramChat getById(Long id) {
         return jdbcClient.sql(FIND_BY_ID_SQL)
             .param(CHAT_ID, id)
             .query(ROW_MAPPER)

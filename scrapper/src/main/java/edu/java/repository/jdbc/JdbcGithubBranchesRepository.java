@@ -30,7 +30,7 @@ public class JdbcGithubBranchesRepository implements GithubBranchesRepository {
     }
 
     @Override
-    public GithubBranches findByLinkId(Long linkId) {
+    public GithubBranches getByLinkId(Long linkId) {
         return jdbcClient.sql(FIND_BY_ID_SQL)
             .param(LINK_ID, linkId)
             .query(ROW_MAPPER)
