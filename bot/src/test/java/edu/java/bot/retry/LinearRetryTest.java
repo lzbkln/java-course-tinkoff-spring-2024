@@ -8,12 +8,15 @@ import edu.java.bot.clients.ScrapperChatClient;
 import edu.java.bot.configuration.retry.HttpStatusCodes;
 import java.time.Duration;
 import java.util.Set;
+import org.apache.kafka.clients.admin.AdminClient;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -24,6 +27,8 @@ import static edu.java.bot.configuration.retry.RetryType.LINEAR;
 @SpringBootTest(classes = {BotApplication.class})
 @DirtiesContext
 public class LinearRetryTest {
+    @MockBean AdminClient adminClient;
+    @MockBean KafkaAdmin kafkaAdmin;
     @Autowired
     private ScrapperChatClient scrapperChatClient;
     private static final String TG_CHAT = "/scrapper/tg-chat/%d";

@@ -13,13 +13,16 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.kafka.clients.admin.AdminClient;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -29,6 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest(classes = {ScrapperApplication.class})
 @DirtiesContext
 public class GitHubClientTest {
+    @MockBean AdminClient adminClient;
+    @MockBean KafkaAdmin kafkaAdmin;
 
     private static WireMockServer wireMockServer;
 

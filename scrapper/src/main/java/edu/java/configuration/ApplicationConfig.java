@@ -3,6 +3,7 @@ package edu.java.configuration;
 import edu.java.configuration.access.AccessType;
 import edu.java.configuration.retry.HttpStatusCodes;
 import edu.java.configuration.retry.RetryType;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
 import java.util.Set;
@@ -23,7 +24,11 @@ public record ApplicationConfig(
     @NotNull
     AccessType databaseAccessType,
     @NotNull
-    Retry retry
+    Retry retry,
+    @NotNull
+    Kafka kafka,
+    @NotNull
+    Boolean useQueue
 ) {
     public record BotLink(String link) {
     }
@@ -39,5 +44,10 @@ public record ApplicationConfig(
 
     public record Retry(@NotNull RetryType type, @NotNull Duration delay, @NotNull Integer maxAttempts,
                         Set<HttpStatusCodes> retryOnStatuses) {
+    }
+
+    public record Kafka(@NotBlank String bootstrapServers, Topic topic) {
+        public record Topic(@NotBlank String updatesTopicName, Integer partitions, Integer replicas) {
+        }
     }
 }
