@@ -1,8 +1,11 @@
 package edu.java.configuration;
 
 import edu.java.configuration.access.AccessType;
+import edu.java.configuration.retry.HttpStatusCodes;
+import edu.java.configuration.retry.RetryType;
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
+import java.util.Set;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -18,7 +21,9 @@ public record ApplicationConfig(
     @NotNull
     BotLink botLink,
     @NotNull
-    AccessType databaseAccessType
+    AccessType databaseAccessType,
+    @NotNull
+    Retry retry
 ) {
     public record BotLink(String link) {
     }
@@ -30,5 +35,9 @@ public record ApplicationConfig(
     }
 
     public record GitHubUrl(String defaultUrl) {
+    }
+
+    public record Retry(@NotNull RetryType type, @NotNull Duration delay, @NotNull Integer maxAttempts,
+                        Set<HttpStatusCodes> retryOnStatuses) {
     }
 }

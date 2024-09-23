@@ -12,17 +12,20 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 public class ScrapperLinksClient {
     private static final String TG_CHAT_ID = "Tg-Chat-Id";
     private static final String LINKS = "/scrapper/links";
     private final WebClient webClient;
+    private final Retry retry;
 
-    public ScrapperLinksClient(String baseUrl) {
+    public ScrapperLinksClient(String baseUrl, Retry retry) {
         webClient = WebClient.builder()
             .baseUrl(baseUrl)
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .build();
+        this.retry = retry;
     }
 
     public Mono<ResponseEntity<ListLinksResponse>> getAllLinks(Long id) {
@@ -35,7 +38,8 @@ public class ScrapperLinksClient {
                     .map(ApiErrorResponseException::new)
                     .flatMap(Mono::error)
             )
-            .toEntity(ListLinksResponse.class);
+            .toEntity(ListLinksResponse.class)
+            .retryWhen(retry);
     }
 
     public Mono<ResponseEntity<Void>> addLink(Long id, AddLinkRequest request) {
@@ -50,7 +54,8 @@ public class ScrapperLinksClient {
                     .map(ApiErrorResponseException::new)
                     .flatMap(Mono::error)
             )
-            .toBodilessEntity();
+            .toBodilessEntity()
+            .retryWhen(retry);
     }
 
     public Mono<ResponseEntity<Void>> deleteLink(Long id, RemoveLinkRequest request) {
@@ -65,6 +70,7 @@ public class ScrapperLinksClient {
                     .map(ApiErrorResponseException::new)
                     .flatMap(Mono::error)
             )
-            .toBodilessEntity();
+            .toBodilessEntity()
+            .retryWhen(retry);
     }
 }
