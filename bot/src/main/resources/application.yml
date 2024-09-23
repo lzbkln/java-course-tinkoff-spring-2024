@@ -16,6 +16,7 @@ app:
       partitions: 2
       replicas: 2
   dlq-topic-suffix: _dlq
+  name-of-metric: count_of_messages_processed
 
 spring:
   application:
@@ -52,3 +53,24 @@ bucket4j:
             - capacity: 20
               time: 1
               unit: minutes
+
+management:
+  server:
+    port: 8091
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: health, info, prometheus
+      path-mapping:
+        prometheus: metrics
+  endpoint:
+    health:
+      enabled: true
+    info:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}

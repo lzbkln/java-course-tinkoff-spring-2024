@@ -24,6 +24,7 @@ app:
       updates-topic-name: scrapper.update
       partitions: 2
       replicas: 2
+  name-of-metric: count_of_messages_processed
 
 
 spring:
@@ -69,3 +70,24 @@ bucket4j:
               time: 1
               unit: minutes
               refill-speed: interval
+
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: health,info,prometheus
+      path-mapping:
+        prometheus: metrics
+  endpoint:
+    health:
+      enabled: true
+    info:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
